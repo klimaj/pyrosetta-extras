@@ -115,8 +115,10 @@ jobs:
           channel-priority: strict
 
       - name: Run tests (conda)
+        shell: bash -l {0}
         run: |
-          conda run -n pyrosetta-env python -m unittest discover -s pyrosetta.tests.distributed.cluster
+          source activate pyrosetta-env
+          python -m unittest discover -s pyrosetta.tests.distributed.cluster
 
   # ============================================================
   # MAMBA JOB
@@ -137,11 +139,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
 
-      - name: Install Mamba and environment
+      - name: Set up Mamba
         run: |
           conda install -n base -c conda-forge mamba
-          mamba env create -f pyrosetta/conda/environment.yml -n pyrosetta-env
+          mamba env create -f pyrosetta/conda/environment.yml
 
       - name: Run tests (mamba)
+        shell: bash -l {0}
         run: |
-          conda run -n pyrosetta-env python -m unittest discover -s pyrosetta.tests.distributed.cluster
+          source activate pyrosetta-env
+          python -m unittest discover -s pyrosetta.tests.distributed.cluster
