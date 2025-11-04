@@ -71,7 +71,8 @@ jobs:
       - name: Install PyRosetta dependencies
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          uv pip -p pyrosetta_uv_project install pyrosetta-installer
+          cd pyrosetta_uv_project
+          uv pip install pyrosetta-installer
 
       - name: Install PyRosetta via installer in uv project
         run: |
