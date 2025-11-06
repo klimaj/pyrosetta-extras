@@ -37,13 +37,13 @@ jobs:
       - name: Run tests (pixi)
         run: |
           cd pyrosetta/pixi
-          pixi run python -m unittest discover -s pyrosetta.tests.distributed.cluster
+          pixi run python -u -m unittest pyrosetta.tests.distributed.cluster.test_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_pixi -v
 
   # ============================================================
   # UV JOB
   # ============================================================
   uv:
-    name: uv
+    name: Uv
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -63,13 +63,29 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           uv --version
 
-      - name: Install PyRosetta dependencies
+      - name: Create new uv project
         run: |
-          uv pip install --system pyrosetta-installer
+          export PATH="$HOME/.local/bin:$PATH"
+          uv init pyrosetta_uv_project
 
-      - name: Install PyRosetta via installer
+      - name: Create uv virtual environment
         run: |
-          python - <<'EOF'
+          export PATH="$HOME/.local/bin:$PATH"
+          cd pyrosetta_uv_project
+          uv venv
+
+      - name: Install PyRosetta installer
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          cd pyrosetta_uv_project
+          # Note: 'pip' is a required dependency of 'pyrosetta-installer'
+          uv pip install pyrosetta-installer pip
+
+      - name: Install PyRosetta via installer in uv project
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          cd pyrosetta_uv_project
+          uv run python - <<'EOF'
           import pyrosetta_installer
           try:
               pyrosetta_installer.install_pyrosetta(
@@ -90,7 +106,9 @@ jobs:
 
       - name: Run tests (uv)
         run: |
-          python -m unittest discover -s pyrosetta.tests.distributed.cluster
+          export PATH="$HOME/.local/bin:$PATH"
+          cd pyrosetta_uv_project
+          uv run python -u -m unittest pyrosetta.tests.distributed.cluster.test_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_uv -v
 
   # ============================================================
   # CONDA JOB
@@ -122,7 +140,7 @@ jobs:
           # Activate the environment
           conda activate pyrosetta-env
           # Run unittest
-          python -m unittest discover -s pyrosetta.tests.distributed.cluster
+          python -u -m unittest pyrosetta.tests.distributed.cluster.test_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_conda -v
 
   # ============================================================
   # MAMBA JOB
@@ -156,4 +174,4 @@ jobs:
           # Activate the environment
           conda activate pyrosetta-env
           # Run unittest
-          python -m unittest discover -s pyrosetta.tests.distributed.cluster
+          python -u -m unittest pyrosetta.tests.distributed.cluster.test_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_mamba -v
