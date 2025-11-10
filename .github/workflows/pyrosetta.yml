@@ -191,10 +191,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
-          activate-environment: base
+          activate-environment: false
+          use-mamba: false
           channel-priority: strict
 
-      - name: Run tests (base conda)
-        shell: bash -l {0}
+      - name: Run tests
+        shell: bash
         run: |
+          which python
+          python --version
           python -m unittest pyrosetta/tests/test_env_reproducibility.py -v
