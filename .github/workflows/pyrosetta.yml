@@ -139,7 +139,7 @@ jobs:
       - name: Install Mamba
         shell: bash -l {0}
         run: |
-          conda install -n base -c conda-forge mamba -y
+          conda install -c conda-forge mamba -y
           which mamba
           mamba --version
 
