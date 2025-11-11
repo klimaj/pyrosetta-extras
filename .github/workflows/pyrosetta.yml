@@ -138,17 +138,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Conda with Mamba
+      - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
           activate-environment: ''
-          use-mamba: true
           channel-priority: strict
+
+      - name: Install Mamba
+        shell: bash -l {0}
+        run: |
+          conda install -y -n base -c conda-forge mamba
 
       - name: Check Mamba
         shell: bash -l {0}
         run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
           echo "PATH=$PATH"
           which mamba
           mamba --version
@@ -156,6 +161,7 @@ jobs:
       - name: Run tests (mamba)
         shell: bash -l {0}
         run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
           which python
           python --version
           python -u -m unittest pyrosetta.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_mamba -v
