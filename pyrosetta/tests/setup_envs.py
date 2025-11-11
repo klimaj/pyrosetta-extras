@@ -108,8 +108,13 @@ def setup_uv_environment(env_dir):
 
     # Install pyrosetta-installer
     print("Adding 'pyrosetta-installer' and 'pip' to uv environment...")
+    # subprocess.run(
+    #     ["uv", "pip", "install", "pyrosetta-installer", "pip"],
+    #     check=True,
+    #     cwd=str(env_path),
+    # )
     subprocess.run(
-        ["uv", "pip", "install", "pyrosetta-installer", "pip"],
+        ["uv", "add", "--project", str(env_path), "pyrosetta-installer", "pip"],
         check=True,
         cwd=str(env_path),
     )
