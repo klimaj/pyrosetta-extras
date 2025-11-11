@@ -19,6 +19,9 @@ from pyrosetta.distributed.cluster.config import (
     source_domains,
 )
 
+
+@bind_method(pyrosetta.distributed.cluster.toolkit)
+@bind_method(pyrosetta.distributed.cluster.converters)
 @bind_method(pyrosetta.distributed.cluster.converter_tasks)
 def get_yml() -> str:
     """
