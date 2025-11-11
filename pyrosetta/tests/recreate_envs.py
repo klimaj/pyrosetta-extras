@@ -18,7 +18,7 @@ def run_recreate_environment(
     original_scorefile_path,
     original_decoy_name,
 ):
-    if env_manager in ("conda", "mamba"):
+    if env_manager in ("conda", "mamba", "pixi"):
         # Write .condarc file dynamically
         os.environ["CONDARC"] = os.path.join(os.getcwd(), ".condarc")
         with open(os.environ["CONDARC"], "w") as f:
