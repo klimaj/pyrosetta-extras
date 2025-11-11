@@ -47,6 +47,9 @@ jobs:
         shell: bash
         run: |
           export PATH="$HOME/.pixi/bin:$PATH"
+          # Add Rosetta Commons conda channel for reproduce step
+          pixi config channel add https://conda.rosettacommons.org
+          pixi config channel list
           which python
           python --version
           python -u -m unittest pyrosetta.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_pixi -v
