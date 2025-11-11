@@ -109,8 +109,9 @@ def setup_uv_environment(env_dir):
     # Install pyrosetta-installer
     print("Adding 'pyrosetta-installer' and 'pip' to uv environment...")
     subprocess.run(
-        ["uv", "pip", "-p", str(env_path), "install", "pyrosetta-installer", "pip"],
+        ["uv", "pip", "install", "pyrosetta-installer", "pip"],
         check=True,
+        cwd=str(env_path),
     )
 
     # Run PyRosetta installer with mirror fallback
