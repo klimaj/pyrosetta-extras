@@ -6,6 +6,7 @@ import os
 import platform
 import subprocess
 import sys
+import tempfile
 import textwrap
 
 from pathlib import Path
@@ -180,18 +181,18 @@ def setup_conda_environment(env_dir, env_manager="conda"):
 
     # Create environment directory
     env_path = Path(env_dir)
-    env_path.mkdir(parents=True, exist_ok=False)
-    env_file = env_path / "environment.yml"
-    env_file.write_text(env_yaml.strip() + "\n")
-    print(f"Created '{env_file}' for platform '{plat}' and Python-{py_version}")
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        env_file = os.path.join(tmp_dir, "environment.yml")
+        with open(env_file, "w") as f:
+            f.write(env_yaml.strip() + "\n")
+        print(f"Created '{env_file}' for platform '{plat}' and Python-{py_version}")
 
-    # Run conda/mamba to build the environment
-    print(f"Running `{env_manager} env create -f {env_file} -p {env_path}`...")
-    subprocess.run(
-        [env_manager, "env", "create", "-f", str(env_file), "-p", str(env_path)],
-        cwd=env_path,
-        check=True,
-    )
+        # Run conda/mamba to build the environment
+        print(f"Running: {env_manager} env create -f {env_file} -p {env_path}")
+        subprocess.run(
+            [env_manager, "env", "create", "-f", env_file, "-p", str(env_path)],
+            check=True,
+        )
 
     print(f"{env_manager.title()} environment setup complete in directory: '{env_path}'.")
 
