@@ -123,7 +123,7 @@ class EnvironmentConfig(Generic[G]):
             lock_file = os.path.join(project_dir, "pixi.lock")
             with open(lock_file, "w") as f:
                 f.write(raw_spec)
-            return f"pixi install --locked --manifest-path '{project_dir}'" # Updated
+            return f"pixi init '{project_dir}' && pixi install --locked --manifest-path '{project_dir}'" # Updated
 
         raise RuntimeError(f"Unsupported environment manager: '{self.environment_manager}'")
 
