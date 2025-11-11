@@ -143,10 +143,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
-          activate-environment: ''
+          activate-environment: base
           use-mamba: true
           channel-priority: strict
-          install-mamba: true
 
       - name: Check Mamba
         shell: bash -l {0}
