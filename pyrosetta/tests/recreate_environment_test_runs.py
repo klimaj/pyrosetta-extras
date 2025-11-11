@@ -6,8 +6,64 @@ import os
 import tempfile
 
 from pyrosetta.distributed.cluster import reproduce, run
-from pyrosetta.distributed.cluster.config import get_environment_var
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+import pyrosetta
+import subprocess
+import sys
+
+from pyrosetta.bindings.utility import bind_method
+from pyrosetta.distributed.cluster.config import (
+    get_environment_cmd,
+    get_environment_manager,
+    get_environment_var,
+    source_domains,
+)
+
+@bind_method(pyrosetta.distributed.cluster.converter_tasks)
+def get_yml() -> str:
+    """
+    Run environment export command to return a YML file string with the current virtual
+    environment, excluding certain source domains.
+    """
+    _ENV_EXPORT_CMDS = {
+        "pixi": "pixi lock --no-install && cat pixi.lock", # Updated
+        "uv": "uv export --format requirements-txt --frozen",
+        "mamba": f"mamba env export --prefix '{sys.prefix}'",
+        "conda": f"conda env export --prefix '{sys.prefix}'",
+    }
+    env_manager = get_environment_manager()
+    environment_cmd = _ENV_EXPORT_CMDS[env_manager]
+    print(f"Running environment command: `{environment_cmd}`")
+    try:
+        raw_yml = subprocess.check_output(
+            environment_cmd,
+            shell=True,
+            stderr=subprocess.DEVNULL,
+        ).decode()
+    except subprocess.CalledProcessError:
+        raw_yml = ""
+
+    return (
+        (
+            os.linesep.join(
+                [f"# {get_environment_var()}={get_environment_manager()}"]
+                + [
+                    line
+                    for line in raw_yml.split(os.linesep)
+                    if all(
+                        source_domain not in line for source_domain in source_domains
+                    )
+                    and all(not line.startswith(s) for s in ["name:", "prefix:"])
+                    and line
+                ]
+            )
+            + os.linesep
+        )
+        if raw_yml
+        else raw_yml
+    )
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 def create_tasks():
     yield {
@@ -59,7 +115,7 @@ def run_original_simulation(
     verbose=True,
 ):
     # Set environment manager
-    os.environ[get_environment_var()] = env_manager
+    os.environ["PYROSETTACLUSTER_ENVIRONMENT_MANAGER"] = env_manager
     with tempfile.TemporaryDirectory() as tmp_dir:
         # Setup simulation
         scratch_dir = os.path.join(tmp_dir, "scratch")
@@ -132,7 +188,7 @@ def run_reproduce_simulation(
     verbose=True,
 ):
     # Set environment manager
-    os.environ[get_environment_var()] = env_manager
+    os.environ["PYROSETTACLUSTER_ENVIRONMENT_MANAGER"] = env_manager
     with tempfile.TemporaryDirectory() as tmp_dir:
         # Setup simulation
         scratch_dir = os.path.join(tmp_dir, "scratch")
