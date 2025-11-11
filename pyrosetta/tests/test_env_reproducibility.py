@@ -284,8 +284,8 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             reproduce_record["instance"]["decoy_ids"],
         )
         self.assertNotEqual(
-            original_record["metadata"]["author"],
-            reproduce_record["metadata"]["author"],
+            original_record["instance"]["author"],
+            reproduce_record["instance"]["author"],
         )
         self.assertNotEqual(
             original_record["metadata"]["decoy_name"],
