@@ -113,7 +113,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
-          activate-environment: true
+          activate-environment: conda-job
           use-mamba: false
           channel-priority: strict
 
