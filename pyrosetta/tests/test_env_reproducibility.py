@@ -30,21 +30,6 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             print(f"Warning: failed to cleanup temporary directory: {ex}... Continuing.")
         os.environ.pop("PYROSETTACLUSTER_ENVIRONMENT_MANAGER", None)
 
-    def assert_atom_coordinates(self, pose1, pose2):
-        self.assertEqual(pose1.size(), pose2.size())
-        for res in range(1, pose1.size() + 1):
-            res1 = pose1.residue(res)
-            res2 = pose2.residue(res)
-            self.assertEqual(res1.name(), res2.name())
-            self.assertEqual(res1.natoms(), res2.natoms())
-            for atom in range(1, res1.natoms() + 1):
-                self.assertEqual(res1.atom_name(atom), res2.atom_name(atom))
-                for axis in "xyz":
-                    self.assertEqual(
-                        float(getattr(res1.atom(atom).xyz(), axis)),
-                        float(getattr(res2.atom(atom).xyz(), axis)),
-                    )
-
     @staticmethod
     def run_subprocess(cmd, module_dir=None, cwd=None):
         print("Running command:", cmd)
@@ -309,6 +294,38 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         # original_pose = io.pose_from_file(original_record["metadata"]["output_file"])
         # reproduce_pose = io.pose_from_file(reproduce_record["metadata"]["output_file"])
         # self.assert_atom_coordinates(original_pose, reproduce_pose)
+
+        original_output_file = original_record["metadata"]["output_file"]
+        reproduce_output_file = reproduce_record["metadata"]["output_file"]
+        assert_coordinates_script = os.path.join(os.path.dirname(__file__), "assert_coordinates.py")
+        module = os.path.splitext(os.path.basename(assert_coordinates_script))[0]
+        if environment_manager == "pixi":
+            pass
+            # cmd = (
+            #     f"pixi run python -u {test_script} "
+            #     f"--original_output_file '{original_output_file}' "
+            #     f"--reproduce_output_file '{reproduce_output_file}' "
+            # )
+        elif environment_manager == "uv":
+            pass
+            # cmd = (
+            #     f"uv run -p {reproduce_env_dir} python -u {test_script} "
+            #     f"--original_output_file '{original_output_file}' "
+            #     f"--reproduce_output_file '{reproduce_output_file}' "
+            # )
+        elif environment_manager in ("conda", "mamba"):
+            cmd = (
+                f"conda run -p {reproduce_env_dir} python -u -m {module} "
+                f"--original_output_file '{original_output_file}' "
+                f"--reproduce_output_file '{reproduce_output_file}' "
+            )
+            returncode = TestEnvironmentReproducibility.run_subprocess(
+                cmd,
+                module_dir=os.path.dirname(assert_coordinates_script),
+                cwd=reproduce_env_dir,
+            )
+        self.assertEqual(returncode, 0, msg=f"Subprocess command failed: {cmd}")
+
 
     @unittest.skipIf(shutil.which("conda") is None, "The executable 'conda' is not available.")
     def test_recreate_environment_conda(self):
