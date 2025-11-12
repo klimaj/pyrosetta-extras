@@ -60,7 +60,7 @@ jobs:
           # pixi config list default-channels --global
           which python
           python --version
-          python -u -m unittest pyrosetta.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_pixi -v
+          python -u -m unittest pyrosettacluster_tests.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_pixi -v
 
 
   # ============================================================
@@ -92,7 +92,7 @@ jobs:
         run: |
           which python
           python --version
-          python -u -m unittest pyrosetta.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_uv -v
+          python -u -m unittest pyrosettacluster_tests.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_uv -v
 
 
   # ============================================================
@@ -122,7 +122,7 @@ jobs:
         run: |
           which python
           python --version
-          python -u -m unittest pyrosetta.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_conda -v
+          python -u -m unittest pyrosettacluster_tests.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_conda -v
 
 
   # ============================================================
@@ -173,4 +173,4 @@ jobs:
           export CONDA_PKGS_DIRS="$HOME/.conda/pkgs"
           which python
           python --version
-          python -u -m unittest pyrosetta.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_mamba -v
+          python -u -m unittest pyrosettacluster_tests.tests.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_mamba -v
