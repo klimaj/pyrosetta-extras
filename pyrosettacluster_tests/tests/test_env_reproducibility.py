@@ -33,7 +33,7 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         os.environ.pop("PYROSETTACLUSTER_ENVIRONMENT_MANAGER", None)
 
     @staticmethod
-    def run_subprocess(cmd, module_dir=None, cwd=None):
+    def run_subprocess(cmd, module_dir=None, cwd=None, live_output=False):
         print("Running command:", cmd)
         if module_dir:
             env = os.environ.copy()
@@ -41,10 +41,11 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             env["PYTHONPATH"] = f"{module_dir}{os.pathsep + pythonpath if pythonpath else ''}"
         else:
             env = None
+        cmd_list = shlex.split(cmd)
         try:
             # Use live output streaming for GitHub Actions visibility
             process = subprocess.Popen(
-                shlex.split(cmd),
+                cmd_list,
                 cwd=cwd,
                 env=env,
                 shell=False,
@@ -53,6 +54,39 @@ class TestEnvironmentReproducibility(unittest.TestCase):
                 text=True,
             )
             returncode = process.wait()
+
+            if live_output:
+                # Use live output streaming for GitHub Actions visibility
+                process = subprocess.Popen(
+                    cmd_list,
+                    cwd=cwd,
+                    env=env,
+                    shell=False,
+                    stdout=sys.stdout,
+                    stderr=sys.stderr,
+                    text=True,
+                )
+                returncode = process.wait()
+            else:
+                # Capture output for debugging
+                result = subprocess.run(
+                    cmd_list,
+                    cwd=cwd,
+                    env=env,
+                    shell=False,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                returncode = result.returncode
+
+                print("------", flush=True)
+                print("\nStdout:\n", flush=True)
+                print(result.stdout, flush=True)
+                print("\nStderr:\n", flush=True)
+                print(result.stderr, flush=True)
+                print("------", flush=True)
+
             if returncode != 0:
                 raise subprocess.CalledProcessError(returncode, cmd)
         except subprocess.CalledProcessError as ex:
