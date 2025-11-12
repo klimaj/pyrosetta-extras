@@ -15,6 +15,8 @@ import tempfile
 import unittest
 import uuid
 
+from pathlib import Path
+
 
 class TestEnvironmentReproducibility(unittest.TestCase):
     @classmethod
@@ -194,6 +196,17 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         reproduce_scorefile_name = "test_scores.json"
         # module = os.path.splitext(os.path.basename(test_script))[0]
         module = "pyrosetta.tests.recreate_environment_test_runs"
+
+        def find_test_root(start_path):
+            path = Path(start_path).resolve()
+            for parent in path.parents:
+                if parent.name == "pyrosetta":
+                    return parent
+            raise FileNotFoundError(f"Could not find 'pyrosetta' root directory from: '{start_path}'")
+
+        src_pyrosetta = find_test_root(__file__)
+        dst_pyrosetta = os.path.join(reproduce_env_dir, "pyrosetta")
+        shutil.copytree(src_pyrosetta, dst_pyrosetta, dirs_exist_ok=True)
         if environment_manager == "pixi":
             cmd = (
                 f"pixi run python -u -m {module} "
