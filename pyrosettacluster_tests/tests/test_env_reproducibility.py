@@ -219,6 +219,29 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             if os.path.isdir(pixi_envs_dir):
                 print("Reproduced environment .pixi/envs files:", os.listdir(pixi_envs_dir))
 
+            def pixi_which_python(project_dir):
+                cmd = ["pixi", "run", "which", "python"]
+                result = subprocess.run(cmd, cwd=project_dir, capture_output=True, text=True, check=True)
+                return result.stdout.strip()
+
+            def pixi_python_sys(project_dir):
+                code = "import sys; print(sys.executable); print(sys.path)"
+                cmd = ["pixi", "run", "python", "-c", code]
+                result = subprocess.run(cmd, cwd=project_dir, capture_output=True, text=True, check=True)
+                lines = result.stdout.strip().splitlines()
+                executable = lines[0]
+                # Evaluate the printed list safely
+                path_list = eval(lines[1])
+                return executable, path_list
+
+            python_executable = pixi_which_python(reproduce_env_dir)
+            print("Reproduced environment Pixi Python executable:", python_executable)
+
+            executable, sys_path = pixi_python_sys(reproduce_env_dir)
+            print("Reproduced environment sys.executable:", executable)
+            print("Reproduced environment sys.path:", sys_path)
+
+
         src_test_root = find_test_root(__file__)
         dst_test_root = os.path.join(reproduce_env_dir, "pyrosettacluster_tests")
         shutil.copytree(src_test_root, dst_test_root, dirs_exist_ok=True)
