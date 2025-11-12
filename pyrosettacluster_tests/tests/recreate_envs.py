@@ -209,7 +209,6 @@ class EnvironmentConfig(Generic[G]):
             [environments]
             {py_feature} = ["{py_feature}"]
             """)
-            os.makedirs(project_dir, exist_ok=False)
             toml_file = os.path.join(project_dir, "pixi.toml")
             with open(toml_file, "w") as f:
                 f.write(pixi_toml)
@@ -316,11 +315,12 @@ def recreate_environment(
                 executable="/bin/bash", # Ensure `&&` works properly
             )
         except subprocess.CalledProcessError as ex:
-            raise RuntimeError(
-                f"Command failed: `{cmd}`\n"
-                f"Return code: {ex.returncode}\n"
-                f"Output:\n{ex.output}"
-            ) from ex
+            print(
+                f"Command failed: `{cmd}`\n",
+                f"Return code: {ex.returncode}\n",
+                f"Output:\n{ex.output}",
+            )
+            raise RuntimeError(cmd)
 
     if not environment_name:
         environment_name = "PyRosettaCluster_" + datetime.now().strftime("%Y.%m.%d.%H.%M.%S.%f")
