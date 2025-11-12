@@ -20,8 +20,8 @@ import warnings
 
 from datetime import datetime
 from functools import lru_cache
-from pyrosetta.distributed.packed_pose.core import PackedPose
-from pyrosetta.rosetta.core.pose import Pose
+# from pyrosetta.distributed.packed_pose.core import PackedPose
+# from pyrosetta.rosetta.core.pose import Pose
 from typing import (
     Dict,
     Generic,
@@ -182,7 +182,7 @@ def get_environment_var() -> str:
 
 def recreate_environment(
     environment_name: Optional[str] = None,
-    input_file: Optional[Union[str, Pose, PackedPose]] = None,
+    input_file: Optional[str] = None,
     scorefile: Optional[str] = None,
     decoy_name: Optional[str] = None,
     timeout: Optional[int] = None,
