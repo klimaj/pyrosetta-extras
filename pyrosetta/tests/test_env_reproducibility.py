@@ -181,6 +181,13 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         )
 
         print("Reproduced environment directory files:", os.listdir(reproduce_env_dir))
+        if environment_manager == "uv":
+            venv_dir = os.path.join(reproduce_env_dir, ".venv")
+            if os.path.isdir(venv_dir):
+                print("Reproduced environment .venv files:", os.listdir(venv_dir))
+            bin_dir = os.path.join(reproduce_env_dir, ".venv", "bin")
+            if os.path.isdir(bin_dir):
+                print("Reproduced environment .venv/bin files:", os.listdir(bin_dir))
 
         # Run reproduction simulation inside recreated environment
         reproduce_output_path = os.path.join(reproduce_env_dir, f"{environment_manager}_reproduce_outputs")
