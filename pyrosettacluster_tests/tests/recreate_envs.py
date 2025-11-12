@@ -215,6 +215,8 @@ def recreate_environment(
         None
     """
     def _run_subprocess(cmd, cwd=None) -> str:
+        env = os.environ.copy()
+        env.pop("PYTHONPATH", None)
         try:
             return subprocess.check_output(
                 cmd,
@@ -223,6 +225,7 @@ def recreate_environment(
                 timeout=timeout,
                 text=True,
                 cwd=cwd,
+                env=env,
                 executable="/bin/bash", # Ensure `&&` works properly
             )
         except subprocess.CalledProcessError as ex:
