@@ -1,6 +1,6 @@
 [workspace]
 channels = ["{rosettacommons_conda_channel}", "conda-forge"]
-name = "pyrosetta-pixi"
+name = "{name}"
 platforms = ["{plat}"]
 version = "1.0.0"
 

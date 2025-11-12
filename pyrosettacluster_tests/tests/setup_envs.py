@@ -50,25 +50,35 @@ def setup_pixi_environment(env_dir):
     plat = detect_platform()
 
     # Build 'pixi.toml' file dynamically
-    pixi_toml = textwrap.dedent(f"""
-    [workspace]
-    channels = ["{ROSETTACOMMONS_CONDA_CHANNEL}", "conda-forge"]
-    name = "pyrosetta-pixi"
-    platforms = ["{plat}"]
-    version = "1.0.0"
+    # pixi_toml = textwrap.dedent(f"""
+    # [workspace]
+    # channels = ["{ROSETTACOMMONS_CONDA_CHANNEL}", "conda-forge"]
+    # name = "pyrosetta-pixi"
+    # platforms = ["{plat}"]
+    # version = "1.0.0"
 
-    [dependencies]
-    pyrosetta = "*"
+    # [dependencies]
+    # pyrosetta = "*"
 
-    [pypi-dependencies]
-    pyrosetta-distributed = "*"
+    # [pypi-dependencies]
+    # pyrosetta-distributed = "*"
 
-    [feature.{py_feature}.dependencies]
-    python = "{py_version}.*"
+    # [feature.{py_feature}.dependencies]
+    # python = "{py_version}.*"
 
-    [environments]
-    {py_feature} = ["{py_feature}"]
-    """)
+    # [environments]
+    # {py_feature} = ["{py_feature}"]
+    # """)
+
+    template_toml_file = os.path.join(os.path.dirname(__file__), os.pardir, "pixi", "pixi.toml")
+    with open(template_toml_file, "r") as f:
+        pixi_toml = f.read().format(
+            rosettacommons_conda_channel=ROSETTACOMMONS_CONDA_CHANNEL,
+            name=os.path.basename(env_dir),
+            plat=plat,
+            py_version=py_version,
+            py_feature=py_feature,
+        )
 
     # Create environment directory
     env_path = Path(env_dir)

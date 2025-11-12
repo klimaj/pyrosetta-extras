@@ -190,25 +190,38 @@ class EnvironmentConfig(Generic[G]):
             plat = detect_platform()
 
             # Build 'pixi.toml' file dynamically
-            pixi_toml = textwrap.dedent(f"""
-            [workspace]
-            channels = ["{ROSETTACOMMONS_CONDA_CHANNEL}", "conda-forge"]
-            name = "{environment_name}"
-            platforms = ["{plat}"]
-            version = "1.0.0"
+            # pixi_toml = textwrap.dedent(f"""
+            # [workspace]
+            # channels = ["{ROSETTACOMMONS_CONDA_CHANNEL}", "conda-forge"]
+            # name = "{environment_name}"
+            # platforms = ["{plat}"]
+            # version = "1.0.0"
 
-            [dependencies]
-            pyrosetta = "*"
+            # [dependencies]
+            # pyrosetta = "*"
 
-            [pypi-dependencies]
-            pyrosetta-distributed = "*"
+            # [pypi-dependencies]
+            # pyrosetta-distributed = "*"
 
-            [feature.{py_feature}.dependencies]
-            python = "{py_version}.*"
+            # [feature.{py_feature}.dependencies]
+            # python = "{py_version}.*"
 
-            [environments]
-            {py_feature} = ["{py_feature}"]
-            """)
+            # [environments]
+            # {py_feature} = ["{py_feature}"]
+            # """)
+            # toml_file = os.path.join(project_dir, "pixi.toml")
+            # with open(toml_file, "w") as f:
+            #     f.write(pixi_toml)
+
+            template_toml_file = os.path.join(os.path.dirname(__file__), os.pardir, "pixi", "pixi.toml")
+            with open(template_toml_file, "r") as f:
+                pixi_toml = f.read().format(
+                    rosettacommons_conda_channel=ROSETTACOMMONS_CONDA_CHANNEL,
+                    name=environment_name,
+                    plat=plat,
+                    py_version=py_version,
+                    py_feature=py_feature,
+                )
             toml_file = os.path.join(project_dir, "pixi.toml")
             with open(toml_file, "w") as f:
                 f.write(pixi_toml)
@@ -443,10 +456,13 @@ def run_recreate_environment(
 ):
     if env_manager in ("conda", "mamba"):
         # Write .condarc file dynamically
-        os.environ["CONDARC"] = os.path.join(os.getcwd(), ".condarc")
-        with open(os.environ["CONDARC"], "w") as f:
-            f.write("channels:\n")
-            f.write(f"  - {ROSETTACOMMONS_CONDA_CHANNEL}\n")
+        template_condarc_file = os.path.join(os.path.dirname(__file__), os.pardir, "conda", ".condarc")
+        condarc_file = os.path.join(os.getcwd(), ".condarc")
+        with open(template_condarc_file, "r") as f1, open(condarc_file, "w") as f2:
+            f2.write(
+                f1.read().format(rosettacommons_conda_channel=ROSETTACOMMONS_CONDA_CHANNEL)
+            )
+        os.environ["CONDARC"] = condarc_file
     # Set environment manager
     os.environ["PYROSETTACLUSTER_ENVIRONMENT_MANAGER"] = env_manager
     # Setup parameters
