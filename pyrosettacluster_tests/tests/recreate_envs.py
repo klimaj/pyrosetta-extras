@@ -409,20 +409,23 @@ def recreate_environment(
     with tempfile.TemporaryDirectory() as tmp_dir:
         env_create_cmd = _env_config.env_create_cmd(environment_name, raw_spec, tmp_dir, base_dir)
         env_dir = os.path.join(base_dir, environment_name) # Updated
-        if environment_manager == "pixi":
-            # lock_file = os.path.join(env_dir, "pixi.lock")
-            # with open(lock_file, "r") as f:
-            #     print("Written pixi.lock file:\n", f.read(), "\n------\n")
-            # toml_file = os.path.join(env_dir, "pixi.toml")
-            # with open(toml_file, "r") as f:
-            #     print("Written pixi.toml file:\n", f.read(), "\n------\n")
-            # print(f"Running environment create command: `{env_create_cmd}`")
-            env = os.environ.copy()
-            env["PIXI_FROZEN"] = "true"
-            output = _run_subprocess(env_create_cmd, cwd=env_dir, env=env) # Updated
-        else:
-            print(f"Running environment create command: `{env_create_cmd}`")
-            output = _run_subprocess(env_create_cmd, cwd=env_dir, env=None) # Updated
+        # if environment_manager == "pixi":
+        #     # lock_file = os.path.join(env_dir, "pixi.lock")
+        #     # with open(lock_file, "r") as f:
+        #     #     print("Written pixi.lock file:\n", f.read(), "\n------\n")
+        #     # toml_file = os.path.join(env_dir, "pixi.toml")
+        #     # with open(toml_file, "r") as f:
+        #     #     print("Written pixi.toml file:\n", f.read(), "\n------\n")
+        #     # print(f"Running environment create command: `{env_create_cmd}`")
+        #     env = os.environ.copy()
+        #     env["PIXI_FROZEN"] = "true"
+        #     output = _run_subprocess(env_create_cmd, cwd=env_dir, env=env) # Updated
+        # else:
+        #     print(f"Running environment create command: `{env_create_cmd}`")
+        #     output = _run_subprocess(env_create_cmd, cwd=env_dir, env=None) # Updated
+
+        print(f"Running environment create command: `{env_create_cmd}`")
+        output = _run_subprocess(env_create_cmd, cwd=env_dir, env=None) # Updated
 
         print(
             f"\nEnvironment successfully created using {environment_manager}: '{environment_name}'\nOutput:\n{output}\n",
