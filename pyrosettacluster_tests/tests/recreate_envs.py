@@ -434,6 +434,10 @@ def run_recreate_environment(
             ["uv", "run", "--project", str(reproduce_env_dir), "--active", "python", "-c", install_script],
             check=True,
         )
+        lock_file = os.path.join(reproduce_env_dir, "uv.lock")
+        if os.path.isfile(lock_file):
+            with open(lock_file, "r") as f:
+                print("Reproduced uv lock file:\n", f.read(), "\n------\n")
 
 if __name__ == "__main__":
     print("Running: {0}".format(__file__))
