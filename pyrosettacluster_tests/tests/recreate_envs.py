@@ -347,6 +347,14 @@ def recreate_environment(
         env_dir = os.path.join(base_dir, environment_name) # Updated
         print(f"Running environment create command: `{env_create_cmd}`")
         output = _run_subprocess(env_create_cmd, cwd=env_dir) # Updated
+
+        if environment_manager == "pixi":
+            lock_file = os.path.join(env_dir, "pixi.lock")
+            with open(lock_file, "r") as f:
+                print("Written pixi.lock file:\n", f.read(), "\n------\n")
+            toml_file = os.path.join(env_dir, "pixi.toml")
+            with open(toml_file, "r") as f:
+                print("Written pixi.toml file:\n", f.read(), "\n------\n")
         print(
             f"\nEnvironment successfully created using {environment_manager}: '{environment_name}'\nOutput:\n{output}\n",
             flush=True,

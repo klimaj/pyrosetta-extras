@@ -217,6 +217,12 @@ def run_reproduce_simulation(
 ):
     # Set environment manager
     os.environ["PYROSETTACLUSTER_ENVIRONMENT_MANAGER"] = env_manager
+
+    print("*" * 50)
+    print("Reproduced environment environment file:")
+    print(get_yml())
+    print("*" * 50)
+
     with tempfile.TemporaryDirectory() as tmp_dir:
         # Setup simulation
         scratch_dir = os.path.join(tmp_dir, "scratch")
