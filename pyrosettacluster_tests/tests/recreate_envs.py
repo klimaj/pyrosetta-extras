@@ -392,17 +392,17 @@ def run_recreate_environment(
             import pyrosetta_installer
             try:
                 pyrosetta_installer.install_pyrosetta(
-                    distributed=False,
+                    distributed=True,
                     serialization=True,
-                    skip_if_installed=True,
+                    skip_if_installed=False,
                     mirror=0
                 )
             except Exception as e:
                 print(f"Recreated PyRosetta installation with 'mirror=0' failed: {e}. Retrying with 'mirror=1'.")
                 pyrosetta_installer.install_pyrosetta(
-                    distributed=False,
+                    distributed=True,
                     serialization=True,
-                    skip_if_installed=True,
+                    skip_if_installed=False,
                     mirror=1
                 )
         """)
