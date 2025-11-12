@@ -200,13 +200,13 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         def find_test_root(start_path):
             path = Path(start_path).resolve()
             for parent in path.parents:
-                if parent.name == "pyrosettacluster_tests":
+                if parent.name == "pyrosetta":
                     return parent
             raise FileNotFoundError(f"Could not find 'pyrosetta' root directory from: '{start_path}'")
 
-        src_test_root = find_test_root(__file__)
-        dst_test_root = os.path.join(reproduce_env_dir, "pyrosettacluster_tests")
-        shutil.copytree(src_test_root, dst_test_root, dirs_exist_ok=True)
+        src_pyrosetta = find_test_root(__file__)
+        dst_pyrosetta = os.path.join(reproduce_env_dir, "pyrosetta")
+        shutil.copytree(src_pyrosetta, dst_pyrosetta, dirs_exist_ok=True)
         if environment_manager == "pixi":
             cmd = (
                 f"pixi run python -u -m {module} "
