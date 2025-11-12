@@ -212,6 +212,12 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             if os.path.isfile(pixi_toml):
                 with open(pixi_toml, "r") as f:
                     print("Reproduced environment pixi.toml file:", f.read())
+            pixi_dir = os.path.join(reproduce_env_dir, ".pixi")
+            if os.path.isdir(pixi_dir):
+                print("Reproduced environment .pixi files:", os.listdir(pixi_dir))
+            pixi_envs_dir = os.path.join(reproduce_env_dir, ".pixi", "envs")
+            if os.path.isdir(pixi_envs_dir):
+                print("Reproduced environment .pixi/envs files:", os.listdir(pixi_envs_dir))
 
         src_test_root = find_test_root(__file__)
         dst_test_root = os.path.join(reproduce_env_dir, "pyrosettacluster_tests")
