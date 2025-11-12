@@ -49,8 +49,9 @@ def get_yml() -> str:
     return (
         (
             os.linesep.join(
-                [f"# {get_environment_var()}={get_environment_manager()}"]
-                + [
+                # [f"# {get_environment_var()}={get_environment_manager()}"]
+                # + [ # Updated
+                [
                     line
                     for line in raw_yml.split(os.linesep)
                     if all(
