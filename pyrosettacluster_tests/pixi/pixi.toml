@@ -1,51 +1,17 @@
-
-# https://pixi.sh/latest/integration/ci/github_actions/?utm_source=chatgpt.com#multiple-environments
 [workspace]
-#channels = ["conda-forge", "https://conda.rosettacommons.org", "https://conda.graylab.jhu.edu"]
-channels = ["conda-forge", "https://conda.rosettacommons.org"]
+channels = ["{rosettacommons_conda_channel}", "conda-forge"]
 name = "pyrosetta-pixi"
-platforms = ["linux-64"]
-version = "0.1.0"
-
-[tasks]
+platforms = ["{plat}"]
+version = "1.0.0"
 
 [dependencies]
-#python = "3.13.*"
 pyrosetta = "*"
-
 
 [pypi-dependencies]
 pyrosetta-distributed = "*"
 
-
-# [feature.py310.dependencies]
-# python = "3.10.*"
-# pyrosetta = "*"
-#
-# [feature.py311.dependencies]
-# python = "3.11.*"
-# pyrosetta = "*"
-#
-# [feature.py312.dependencies]
-# python = "3.12.*"
-# pyrosetta = "*"
-#
-[feature.py313.dependencies]
-python = "3.13.*"
-# pyrosetta = "*"
-#
-# [feature.py314.dependencies]
-# python = "3.14.*"
-# pyrosetta = "*"
-#
-#
-# [environments]
-# py310 = ["py310"]
-# py311 = ["py311"]
-# py312 = ["py312"]
-# py313 = ["py313"]
-# py314 = ["py314"]
-
+[feature.{py_feature}.dependencies]
+python = "{py_version}.*"
 
 [environments]
-py313 = ["py313"]
+{py_feature} = ["{py_feature}"]
