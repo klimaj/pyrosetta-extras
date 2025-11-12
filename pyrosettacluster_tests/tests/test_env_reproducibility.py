@@ -209,8 +209,8 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         # Run reproduction simulation inside recreated environment
         reproduce_output_path = os.path.join(reproduce_env_dir, f"{environment_manager}_reproduce_outputs")
         reproduce_scorefile_name = "test_scores.json"
-        # module = os.path.splitext(os.path.basename(test_script))[0]
-        module = "pyrosettacluster_tests.tests.recreate_environment_test_runs"
+        module = os.path.splitext(os.path.basename(test_script))[0]
+        # module = "pyrosettacluster_tests.tests.recreate_environment_test_runs"
 
         def find_test_root(start_path):
             path = Path(start_path).resolve()
@@ -289,7 +289,8 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             )
             returncode = TestEnvironmentReproducibility.run_subprocess(
                 cmd,
-                module_dir=reproduce_env_dir,
+                # module_dir=reproduce_env_dir,
+                module_dir=os.path.dirname(test_script),
                 # For pixi, activate the recreated pixi environment context
                 cwd=reproduce_env_dir,
             )
@@ -306,7 +307,8 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             )
             returncode = TestEnvironmentReproducibility.run_subprocess(
                 cmd,
-                module_dir=reproduce_env_dir,
+                # module_dir=reproduce_env_dir,
+                module_dir=os.path.dirname(test_script),
                 # For uv, activate the recreated uv environment context
                 cwd=reproduce_env_dir,
             )
