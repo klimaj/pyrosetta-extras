@@ -77,7 +77,7 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         original_env_dir = os.path.join(self.workdir.name, original_env_name)
         setup_env_script = os.path.join(os.path.dirname(__file__), "setup_envs.py")
         module = os.path.splitext(os.path.basename(setup_env_script))[0]
-        cmd = "{0} -m {1} --env_manager '{2}' --env_dir '{3}'".format(
+        cmd = "{0} -u -m {1} --env_manager '{2}' --env_dir '{3}'".format(
             sys.executable,
             module,
             environment_manager,

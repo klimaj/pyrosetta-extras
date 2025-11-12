@@ -1,5 +1,15 @@
 __author__ = "Jason C. Klima"
 
+import os
+import sys
+
+print("### Debug")
+print("PYTHONPATH:", os.environ.get("PYTHONPATH"))
+print("sys.executable:", sys.executable)
+print("sys.path:")
+for p in sys.path:
+    print(" ", p)
+print("### Debug")
 
 import argparse
 import os
