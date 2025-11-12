@@ -29,43 +29,50 @@ def get_yml() -> str:
     environment, excluding certain source domains.
     """
     _ENV_EXPORT_CMDS = {
-        "pixi": "pixi lock --check || (echo 'Regenerating pixi.lock file...' && pixi lock --no-install); cat pixi.lock", # Updated
+        # "pixi": "pixi lock --check || (echo 'Regenerating pixi.lock file...' && pixi lock --no-install); cat pixi.lock", # Updated
         "uv": "uv export --format requirements-txt --frozen",
         "mamba": f"mamba env export --prefix '{sys.prefix}'",
         "conda": f"conda env export --prefix '{sys.prefix}'",
     }
     env_manager = get_environment_manager()
-    environment_cmd = _ENV_EXPORT_CMDS[env_manager]
-    print(f"Running environment command: `{environment_cmd}`")
-    try:
-        raw_yml = subprocess.check_output(
-            environment_cmd,
-            shell=True,
-            stderr=subprocess.DEVNULL,
-        ).decode()
-    except subprocess.CalledProcessError:
-        raw_yml = ""
+    if env_manager == "pixi":
+        environment_cmd = "pixi lock --check || pixi lock --no-install"
+        print(f"Running environment command: `{environment_cmd}`")
+        subprocess.run(environment_cmd, shell=True, check=True)
+        with open("pixi.lock") as f:
+            yml = f.read()
+    else:
+        environment_cmd = _ENV_EXPORT_CMDS[env_manager]
+        print(f"Running environment command: `{environment_cmd}`")
+        try:
+            raw_yml = subprocess.check_output(
+                environment_cmd,
+                shell=True,
+                stderr=subprocess.DEVNULL,
+            ).decode()
+        except subprocess.CalledProcessError:
+            raw_yml = ""
 
-    yml = (
-        (
-            os.linesep.join(
-                # [f"# {get_environment_var()}={get_environment_manager()}"]
-                # + [ # Updated
-                [
-                    line
-                    for line in raw_yml.split(os.linesep)
-                    if all(
-                        source_domain not in line for source_domain in source_domains
-                    )
-                    and all(not line.startswith(s) for s in ["name:", "prefix:"])
-                    and line
-                ]
+        yml = (
+            (
+                os.linesep.join(
+                    # [f"# {get_environment_var()}={get_environment_manager()}"]
+                    # + [ # Updated
+                    [
+                        line
+                        for line in raw_yml.split(os.linesep)
+                        if all(
+                            source_domain not in line for source_domain in source_domains
+                        )
+                        and all(not line.startswith(s) for s in ["name:", "prefix:"])
+                        and line
+                    ]
+                )
+                + os.linesep
             )
-            + os.linesep
+            if raw_yml
+            else raw_yml
         )
-        if raw_yml
-        else raw_yml
-    )
 
     print("Generated YML string:")
     print("#" * 100)
