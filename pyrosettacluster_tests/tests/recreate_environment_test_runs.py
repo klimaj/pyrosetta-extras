@@ -245,7 +245,8 @@ def my_protocol(packed_pose, **kwargs):
     import math
     import pyrosetta
     import pyrosetta.distributed.io as io
-    from pyrosetta.rosetta.protocols.minimization_packing import PackRotamersMover
+    from pyrosetta.rosetta.protocols.minimization_packing import PackRotamersMover, MinMover
+    from pyrosetta.rosetta.core.kinematics import MoveMap
 
     assert packed_pose is None, f"The input `PackedPose` object must be `None`. Received: {packed_pose}"
     pose = pyrosetta.pose_from_sequence(kwargs["seq"])
@@ -259,7 +260,20 @@ def my_protocol(packed_pose, **kwargs):
         task=pyrosetta.standard_packer_task(pose),
         nloop=3,
     )
+    movemap = MoveMap()
+    movemap.set_bb(True)
+    movemap.set_chi(True)
+    movemap.set_jump(True)
+    min_mover = MinMover()
+    min_mover.set_movemap(movemap)
+    min_mover.score_function(scorefxn)
+    min_mover.min_type("lbfgs_armijo_nonmonotone")
+    min_mover.tolerance(1e-4)
+
     pack_rotamers.apply(pose)
+    min_mover.apply(pose)
+    pack_rotamers.apply(pose)
+    min_mover.apply(pose)
     scorefxn(pose)
 
     return pose
