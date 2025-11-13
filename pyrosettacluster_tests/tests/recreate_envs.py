@@ -510,7 +510,7 @@ def run_recreate_environment(
         install_pyrosetta_file = Path(__file__).resolve().parent.parent / "uv" / "install_pyrosetta.py"
         install_pyrosetta_script = install_pyrosetta_file.read_text()
         subprocess.run(
-            ["uv", "run", "--project", str(reproduce_env_dir), "--active", "python", "-c", install_pyrosetta_script],
+            ["uv", "run", "--project", str(reproduce_env_dir), "python", "-c", install_pyrosetta_script],
             check=True,
         )
         # lock_file = os.path.join(reproduce_env_dir, "uv.lock")
