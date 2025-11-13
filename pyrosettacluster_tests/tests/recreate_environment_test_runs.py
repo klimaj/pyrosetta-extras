@@ -26,8 +26,8 @@ import sys
 from pyrosetta.bindings.utility import bind_method
 from pyrosetta.distributed.cluster.config import (
     get_environment_manager,
-    get_environment_var,
-    source_domains,
+    # get_environment_var,
+    # source_domains,
 )
 
 
@@ -83,75 +83,149 @@ def get_env_export_cmd(env_manager: str) -> str:
         return base_cmds.get(env_manager, "")
 
 
+# @bind_method(pyrosetta.distributed.cluster.toolkit)
+# @bind_method(pyrosetta.distributed.cluster.converters)
+# @bind_method(pyrosetta.distributed.cluster.converter_tasks)
+# def get_yml() -> str:
+#     """
+#     Run environment export command to return a YML file string with the current virtual
+#     environment, excluding certain source domains.
+#     """
+#     def remove_comments(text: str) -> str:
+#         """Remove lines starting with '#' from a requirements.txt file string."""
+#         return "\n".join(
+#             line for line in text.splitlines()
+#             if not line.strip().startswith("#")
+#         )
+
+#     # _ENV_EXPORT_CMDS = {
+#     #     "pixi": "pixi lock --check || pixi lock --no-install", # Updated
+#     #     "uv": "uv export --format requirements-txt --frozen",
+#     #     "mamba": f"mamba env export --prefix '{sys.prefix}'",
+#     #     "conda": f"conda env export --prefix '{sys.prefix}'",
+#     # }
+#     env_manager = get_environment_manager()
+#     # environment_cmd = _ENV_EXPORT_CMDS[env_manager]
+#     environment_cmd = get_env_export_cmd(env_manager)
+#     print(f"Running environment command: `{environment_cmd}`")
+#     if env_manager == "pixi": # Updated
+#         subprocess.run(
+#             environment_cmd,
+#             shell=True,
+#             check=True,
+#             stderr=subprocess.DEVNULL,
+#         )
+#         with open("pixi.lock") as f:
+#             yml = f.read()
+#     else:
+#         try:
+#             raw_yml = subprocess.check_output(
+#                 environment_cmd,
+#                 shell=True,
+#                 stderr=subprocess.DEVNULL,
+#             ).decode()
+#         except subprocess.CalledProcessError:
+#             raw_yml = ""
+
+#         yml = (
+#             (
+#                 os.linesep.join(
+#                     # [f"# {get_environment_var()}={get_environment_manager()}"]
+#                     # + [ # Updated
+#                     [
+#                         line
+#                         for line in raw_yml.split(os.linesep)
+#                         if all(
+#                             source_domain not in line for source_domain in source_domains
+#                         )
+#                         and all(not line.startswith(s) for s in ["name:", "prefix:"])
+#                         and line
+#                     ]
+#                 )
+#                 + os.linesep
+#             )
+#             if raw_yml
+#             else raw_yml
+#         )
+
+#     if env_manager == "uv":
+#         yml = remove_comments(yml)
+
+#     return yml
+
+
 @bind_method(pyrosetta.distributed.cluster.toolkit)
 @bind_method(pyrosetta.distributed.cluster.converters)
 @bind_method(pyrosetta.distributed.cluster.converter_tasks)
 def get_yml() -> str:
     """
-    Run environment export command to return a YML file string with the current virtual
-    environment, excluding certain source domains.
+    Export the current environment to a YAML string, excluding metadata lines
+    depending on the environment manager.
     """
+
     def remove_comments(text: str) -> str:
-        """Remove lines starting with '#' from a requirements.txt file string."""
+        """Remove lines starting with '#'."""
         return "\n".join(
-            line for line in text.splitlines()
-            if not line.strip().startswith("#")
+            line for line in text.splitlines() if not line.strip().startswith("#")
         )
 
-    # _ENV_EXPORT_CMDS = {
-    #     "pixi": "pixi lock --check || pixi lock --no-install", # Updated
-    #     "uv": "uv export --format requirements-txt --frozen",
-    #     "mamba": f"mamba env export --prefix '{sys.prefix}'",
-    #     "conda": f"conda env export --prefix '{sys.prefix}'",
-    # }
+    def remove_metadata(text: str) -> str:
+        """Remove 'name:' and 'prefix:' lines."""
+        filtered_lines = [
+            line
+            for line in text.splitlines()
+            if not line.startswith(("name:", "prefix:")) and line.strip()
+        ]
+        return "\n".join(filtered_lines) + "\n"
+
+
     env_manager = get_environment_manager()
-    # environment_cmd = _ENV_EXPORT_CMDS[env_manager]
     environment_cmd = get_env_export_cmd(env_manager)
+
     print(f"Running environment command: `{environment_cmd}`")
-    if env_manager == "pixi": # Updated
-        subprocess.run(
+
+    # Handle Pixi separately since it writes a pixi.lock file
+    if env_manager == "pixi":
+        try:
+            subprocess.run(
+                environment_cmd,
+                shell=True,
+                check=True,
+                stderr=subprocess.DEVNULL,
+            )
+            lock_path = os.path.join(
+                os.environ.get("PIXI_PROJECT_MANIFEST", os.getcwd()),
+                "pixi.lock",
+            )
+            with open(lock_path, encoding="utf-8") as f:
+                return f.read()
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return ""
+
+    # For all other environment managers, run the export command and process the output
+    try:
+        result = subprocess.run(
             environment_cmd,
             shell=True,
             check=True,
             stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            text=True,
         )
-        with open("pixi.lock") as f:
-            yml = f.read()
-    else:
-        try:
-            raw_yml = subprocess.check_output(
-                environment_cmd,
-                shell=True,
-                stderr=subprocess.DEVNULL,
-            ).decode()
-        except subprocess.CalledProcessError:
-            raw_yml = ""
+    except subprocess.CalledProcessError:
+        return ""
 
-        yml = (
-            (
-                os.linesep.join(
-                    # [f"# {get_environment_var()}={get_environment_manager()}"]
-                    # + [ # Updated
-                    [
-                        line
-                        for line in raw_yml.split(os.linesep)
-                        if all(
-                            source_domain not in line for source_domain in source_domains
-                        )
-                        and all(not line.startswith(s) for s in ["name:", "prefix:"])
-                        and line
-                    ]
-                )
-                + os.linesep
-            )
-            if raw_yml
-            else raw_yml
-        )
+    raw_yml = result.stdout.strip()
+    if not raw_yml:
+        return ""
 
     if env_manager == "uv":
-        yml = remove_comments(yml)
+        return remove_comments(raw_yml)
+    elif env_manager in ("conda", "mamba"):
+        return remove_metadata(raw_yml)
 
-    return yml
+    raise NotImplementedError(env_manager)
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 def create_tasks():
