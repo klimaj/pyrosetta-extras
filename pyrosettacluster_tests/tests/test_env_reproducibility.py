@@ -158,10 +158,10 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         self.assertIn("decoy_name", original_record["metadata"])
         original_decoy_name = original_record["metadata"]["decoy_name"]
 
-        # print("*" * 50)
-        # print("Cached environment file:")
-        # print(original_record["instance"]["environment"])
-        # print("*" * 50)
+        print("*" * 50)
+        print("Cached environment file:")
+        print(original_record["instance"]["environment"])
+        print("*" * 50)
 
         # Recreate environment
         reproduce_env_name = f"{original_env_name}_reproduce"
