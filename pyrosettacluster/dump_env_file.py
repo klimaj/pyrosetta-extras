@@ -47,10 +47,50 @@ def main(
 
     toml = metadata_kwargs.get("toml")
     toml_format = metadata_kwargs.get("toml_format")
-    manager = metadata_kwargs.get("environment_manager")  # may be `None` in legacy cases
+    env_manager = metadata_kwargs.get("environment_manager")  # may be `None` in legacy cases
+
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # Temporary bootstrap until PR #567 is merged
+    import sys
+    from pathlib import Path
+
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    from tests.pyrosettacluster.utils import (
+        ROSETTACOMMONS_CONDA_CHANNEL,
+        detect_platform,
+    )
+
+    if env_manager == "pixi":
+        if not toml:
+            # Detect Python version
+            py_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+            py_feature = f"py{sys.version_info.major}{sys.version_info.minor}"
+            # Detect platform
+            plat = detect_platform()
+            toml_format = "pixi.toml"
+            template_toml_file = Path(__file__).resolve().parent.parent / "tests" / "pyrosettacluster" / "pixi" / toml_format
+            with open(template_toml_file, "r") as f:
+                toml = f.read().format(
+                    rosettacommons_conda_channel=ROSETTACOMMONS_CONDA_CHANNEL,
+                    name=os.path.basename(env_dir),
+                    plat=plat,
+                    py_version=py_version,
+                    py_feature=py_feature,
+                )
+    elif env_manager == "uv":
+        if not toml:
+            py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+            toml_format = "pyproject.toml"
+            template_toml_file = Path(__file__).resolve().parent.parent / "tests" / "pyrosettacluster" / "uv" / toml_format
+            with open(template_toml_file, "r") as f:
+                toml = f.read().format(
+                    name=os.path.basename(env_dir),
+                    py_version=py_version,
+                )
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     # Determine output files based on manager or legacy behavior
-    if manager == "pixi":
+    if env_manager == "pixi":
         env_file = os.path.join(env_dir, "pixi.lock")
         write_file(env_file, environment)
         if toml:
@@ -64,7 +104,7 @@ def main(
                 "the pixi project."
             )
 
-    elif manager == "uv":
+    elif env_manager == "uv":
         env_file = os.path.join(env_dir, "requirements.txt")
         write_file(env_file, environment)
         if toml:
@@ -78,7 +118,7 @@ def main(
                 "the uv project."
             )
 
-    elif manager in ("conda", "mamba"):
+    elif env_manager in ("conda", "mamba"):
         env_file = os.path.join(env_dir, "environment.yml")
         write_file(env_file, environment)
 
