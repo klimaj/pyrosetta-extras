@@ -45,17 +45,17 @@ def main(
             "the environment cannot be recreated."
         )
 
-    manifest = metadata_kwargs.get("manifest")
-    manifest_format = metadata_kwargs.get("manifest_format")
+    toml = metadata_kwargs.get("toml")
+    toml_format = metadata_kwargs.get("toml_format")
     manager = metadata_kwargs.get("environment_manager")  # may be `None` in legacy cases
 
     # Determine output files based on manager or legacy behavior
     if manager == "pixi":
         env_file = os.path.join(env_dir, "pixi.lock")
         write_file(env_file, environment)
-        if manifest:
-            manifest_file = os.path.join(env_dir, manifest_format)
-            write_file(manifest_file, manifest)
+        if toml:
+            toml_file = os.path.join(env_dir, toml_format)
+            write_file(toml_file, toml)
         else:
             print(
                 f"[WARNING] The PyRosettaCluster result contains an empty pixi manifest file string. "
@@ -67,6 +67,16 @@ def main(
     elif manager == "uv":
         env_file = os.path.join(env_dir, "requirements.txt")
         write_file(env_file, environment)
+        if toml:
+            toml_file = os.path.join(env_dir, toml_format)
+            write_file(toml_file, toml)
+        else:
+            print(
+                f"[WARNING] The PyRosettaCluster result contains an empty uv TOML file string. "
+                "Please generate a uv TOML file for the written `requirements.txt` file, or ensure "
+                "the original uv TOML file is put in the output directory before recreating "
+                "the uv project."
+            )
 
     elif manager in ("conda", "mamba"):
         env_file = os.path.join(env_dir, "environment.yml")
