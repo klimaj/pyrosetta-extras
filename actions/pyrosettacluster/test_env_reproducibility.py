@@ -151,17 +151,36 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         reproduce_env_name = f"{original_env_name}_reproduce"
         reproduce_env_dir = os.path.join(self.workdir.name, reproduce_env_name)
         dump_env_file_script = Path(__file__).resolve().parent.parent.parent / "pyrosettacluster" / "dump_env_file.py"
-        cmd = (
-            f"{sys.executable} -u {dump_env_file_script} "
-            f"--scorefile '{original_scorefile_path}' "
-            f"--decoy_name '{original_decoy_name}' "
-            f"--env_dir '{reproduce_env_dir}' "
-            f"--env_manager '{environment_manager}'"
-        )
+        if environment_manager == "pixi":
+            cmd = (
+                f"pixi run python -u {dump_env_file_script} "
+                f"--scorefile '{original_scorefile_path}' "
+                f"--decoy_name '{original_decoy_name}' "
+                f"--env_dir '{reproduce_env_dir}' "
+                f"--env_manager '{environment_manager}'"
+            )
+        elif environment_manager == "uv":
+            cmd = (
+                f"uv run --project {original_env_dir} python -u {dump_env_file_script} "
+                f"--scorefile '{original_scorefile_path}' "
+                f"--decoy_name '{original_decoy_name}' "
+                f"--env_dir '{reproduce_env_dir}' "
+                f"--env_manager '{environment_manager}'"
+            )
+        elif environment_manager in ("conda", "mamba"):
+            cmd = (
+                f"conda run -p {original_env_dir} python -u {dump_env_file_script} "
+                f"--scorefile '{original_scorefile_path}' "
+                f"--decoy_name '{original_decoy_name}' "
+                f"--env_dir '{reproduce_env_dir}' "
+                f"--env_manager '{environment_manager}'"
+            )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
             module_dir=None,
-            cwd=None,
+            # For pixi, activate the original pixi environment context
+            # For conda/mamba/uv, run from environment directory for consistency with pixi workflow
+            cwd=original_env_dir,
         )
         self.assertEqual(returncode, 0, msg=f"Subprocess command failed: {cmd}")
         self.assertTrue(
