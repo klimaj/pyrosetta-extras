@@ -431,7 +431,7 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
             )
 
         # Install packages strictly from requirements.txt
-        env_create_cmd = f"uv pip install -r '{req_file}'"
+        env_create_cmd = f"uv venv --seed && uv pip install -r '{req_file}'"
         # env_create_cmd = f"uv add --requirements '{req_file}'"
 
     elif env_manager in ("conda", "mamba"):
@@ -442,7 +442,7 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
                 f"is in the {env_manager} environment prefix directory, then try again."
             )
 
-        env_create_cmd = f"{env_manager} env create -f '{yml_file}' -p '{env_dir}'"
+        env_create_cmd = f"{env_manager} env create -f '{yml_file}' -p '{env_dir}' --force"
 
     else:
         raise ValueError(f"Unsupported environment manager: {env_manager}")
