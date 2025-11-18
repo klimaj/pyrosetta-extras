@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 *Warning*: This function runs a subprocess with one of the following commands:
     - `conda env create ...`: when 'conda' is an executable
@@ -5,16 +6,15 @@
     - `uv pip install ...`: when 'uv' is an executable
     - `pixi install ...`: when 'pixi' is an executable
 Installing certain packages may not be secure, so please only run with input files you trust.
-Learn more about PyPI security `here <https://pypi.org/security>`_ and conda security `here <https://www.anaconda.com/docs/reference/security>`_.
+Learn more about PyPI security at <https://pypi.org/security> and conda security
+at <https://www.anaconda.com/docs/reference/security>.
 
-Given an input file that was written by PyRosettaCluster, or a scorefile
-and a decoy name that was written by PyRosettaCluster, recreate the
-environment that was used to generate the decoy with a new environment name.
-
+Given an environment directory with dumped files that were written by PyRosettaCluster,
+recreate the environment that was used to generate the decoy with a new environment name.
 The environment manager used (i.e., either 'conda', 'mamba', 'uv', or 'pixi') is
 automatically determined from the operating system environment variable
 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER' if exported, or otherwise it must be
-provided using the `--env_manager` flag.
+provided using the `--env_manager` flag. Run `./recreate_env.py --help` for more details.
 """
 
 __author__ = "Jason C. Klima"
@@ -526,8 +526,8 @@ if __name__ == "__main__":
         default=env_manager_default,
         help=(
             "Environment manager to use: pixi, uv, conda, or mamba.\n"
-            "If omitted, the environment variable "
-            "`PYROSETTACLUSTER_ENVIRONMENT_MANAGER` will be used if set."
+            "If omitted, the environment variable 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER' "
+            "will be used if set."
         ),
     )
 
@@ -546,8 +546,8 @@ if __name__ == "__main__":
 
     if args.env_manager is None:
         raise SystemExit(
-            "Error: No environment manager was provided.\n"
-            "Provide the `--env_manager` flag, or otherwise set the "
+            "No environment manager was provided. Please provide "
+            "the `--env_manager` flag, or otherwise set the "
             "environment variable 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER'."
         )
 
