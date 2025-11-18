@@ -288,14 +288,14 @@ def main(
                     py_version=py_version,
                     py_feature=py_feature,
                 )
-            print("New TOML file:\n", new_toml)
+            print(f"New TOML file:\n{new_toml}")
 
             original_env_dir = os.path.join(os.path.dirname(env_dir), os.path.basename(env_dir).split("_reproduce")[0])
             toml_format = "pixi.toml"
             original_toml_file = os.path.join(original_env_dir, toml_format)
             with open(original_toml_file, "r") as f:
                 original_toml = f.read()
-            print("Original TOML file:\n", original_toml)
+            print(f"Original TOML file:\n{original_toml}")
 
             toml = original_toml
 
@@ -309,14 +309,14 @@ def main(
                     name=os.path.basename(env_dir),
                     py_version=py_version,
                 )
-            print("New TOML file:\n", new_toml)
+            print(f"New TOML file:\n{new_toml}")
 
             original_env_dir = os.path.join(os.path.dirname(env_dir), os.path.basename(env_dir).split("_reproduce")[0])
             toml_format = "pyproject.toml"
             original_toml_file = os.path.join(original_env_dir, toml_format)
             with open(original_toml_file, "r") as f:
                 original_toml = f.read()
-            print("Original TOML file:\n", original_toml)
+            print(f"Original TOML file:\n{original_toml}")
 
             toml = original_toml
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
