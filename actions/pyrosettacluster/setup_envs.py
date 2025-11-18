@@ -10,7 +10,7 @@ import tempfile
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
-from tests.pyrosettacluster.utils import (
+from actions.pyrosettacluster.utils import (
     ROSETTACOMMONS_CONDA_CHANNEL,
     detect_platform,
 )
