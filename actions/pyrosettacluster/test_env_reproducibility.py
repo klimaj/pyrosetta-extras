@@ -157,7 +157,6 @@ class TestEnvironmentReproducibility(unittest.TestCase):
                 f"--scorefile '{original_scorefile_path}' "
                 f"--decoy_name '{original_decoy_name}' "
                 f"--env_dir '{reproduce_env_dir}' "
-                f"--env_manager '{environment_manager}'"
             )
         elif environment_manager == "uv":
             cmd = (
@@ -165,7 +164,6 @@ class TestEnvironmentReproducibility(unittest.TestCase):
                 f"--scorefile '{original_scorefile_path}' "
                 f"--decoy_name '{original_decoy_name}' "
                 f"--env_dir '{reproduce_env_dir}' "
-                f"--env_manager '{environment_manager}'"
             )
         elif environment_manager in ("conda", "mamba"):
             cmd = (
@@ -173,7 +171,6 @@ class TestEnvironmentReproducibility(unittest.TestCase):
                 f"--scorefile '{original_scorefile_path}' "
                 f"--decoy_name '{original_decoy_name}' "
                 f"--env_dir '{reproduce_env_dir}' "
-                f"--env_manager '{environment_manager}'"
             )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
