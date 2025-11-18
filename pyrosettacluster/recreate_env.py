@@ -434,7 +434,7 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
 
         # Install packages strictly from requirements.txt
         # env_create_cmd = f"uv venv --seed && uv pip install -r '{req_file}'"
-        env_create_cmd = f"uv add --requirements '{req_file}'"
+        env_create_cmd = f"uv add --project '{env_dir}' --requirements '{req_file}'"
 
     elif env_manager == "conda":
         yml_file = os.path.join(env_dir, "environment.yml")
@@ -481,7 +481,9 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
         run_subprocess(env_create_cmd, cwd=env_dir, timeout=timeout)
     
     if env_manager == "uv":
-        # Run PyRosetta installer with mirror fallback
+        # The recreated uv environment uses the PyPI 'pyrosetta-installer' package, which does not allow specifying PyRosetta version.
+        # Therefore, installing the correct PyRosetta version in the recreated uv environment depends fortuitously on a prompt
+        # uv environment recreation after the original uv environment creation.
         print("[INFO] Running PyRosetta installer in uv environment...")
         install_pyrosetta_file = Path(__file__).resolve().parent / "install_pyrosetta.py"
         # install_pyrosetta_script = install_pyrosetta_file.read_text()
@@ -489,9 +491,10 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
         #     ["uv", "run", "--project", f"'{env_dir}'", "python", "-c", install_pyrosetta_script],
         #     check=True,
         # )
-        subprocess.run(
-            ["uv", "run", "--project", f"'{env_dir}'", "python", install_pyrosetta_file],
-            check=True,
+        run_subprocess(
+            f"uv run --project '{env_dir}' python '{install_pyrosetta_file}'",
+            cwd=env_dir,
+            timeout=timeout,
         )
 
     print(
