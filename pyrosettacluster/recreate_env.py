@@ -363,6 +363,7 @@ import argparse
 import os
 import shutil
 import subprocess
+import tempfile
 
 from typing import Any, Dict, Optional
 
@@ -431,23 +432,57 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
             )
 
         # Install packages strictly from requirements.txt
-        env_create_cmd = f"uv venv --seed && uv pip install -r '{req_file}'"
-        # env_create_cmd = f"uv add --requirements '{req_file}'"
+        # env_create_cmd = f"uv venv --seed && uv pip install -r '{req_file}'"
+        env_create_cmd = f"uv add --requirements '{req_file}'"
 
-    elif env_manager in ("conda", "mamba"):
+    elif env_manager == "conda":
         yml_file = os.path.join(env_dir, "environment.yml")
         if not os.path.isfile(yml_file):
             raise FileNotFoundError(
-                f"Please ensure that the {env_manager} environment 'environment.yml' file "
-                f"is in the {env_manager} environment prefix directory, then try again."
+                "Please ensure that the conda environment 'environment.yml' file is in the environment directory."
             )
+        env_create_cmd = f"conda env create -f '{yml_file}' -p '{env_dir}'"
 
-        env_create_cmd = f"{env_manager} env create -f '{yml_file}' -p '{env_dir}' --force"
+    elif env_manager == "mamba":
+        yml_file = os.path.join(env_dir, "environment.yml")
+        if not os.path.isfile(yml_file):
+            raise FileNotFoundError(
+                "Please ensure that the mamba environment 'environment.yml' file is in the environment directory."
+            )
+        # Transactional Mamba logic
+        temp_dir = tempfile.mkdtemp(prefix="env_backup_")
+        try:
+            # Move all files in `env_dir` into `temp_dir`
+            for f in os.listdir(env_dir):
+                shutil.move(os.path.join(env_dir, f), temp_dir)
+            temp_yml = os.path.join(temp_dir, "environment.yml")
+            env_create_cmd = f"mamba env create -f '{temp_yml}' -p '{env_dir}'"
+            # Run Mamba
+            run_subprocess(env_create_cmd, cwd=env_dir, timeout=timeout)
+        except Exception:
+            # On failure, restore all original files
+            for f in os.listdir(temp_dir):
+                shutil.move(os.path.join(temp_dir, f), env_dir)
+            raise
+        else:
+            # On success, restore any remaining original files that don't conflict
+            for f in os.listdir(temp_dir):
+                target = os.path.join(env_dir, f)
+                if not os.path.exists(target):
+                    shutil.move(os.path.join(temp_dir, f), env_dir)
+                else:
+                    print(f"[WARNING] Existing file is being overwritten in the created environment directory: '{target}'")
+        finally:
+            # Clean up temporary directory
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
 
     else:
         raise ValueError(f"Unsupported environment manager: {env_manager}")
 
-    run_subprocess(env_create_cmd, cwd=env_dir, timeout=timeout)
+    # For all managers except mamba
+    if env_manager != "mamba":
+        run_subprocess(env_create_cmd, cwd=env_dir, timeout=timeout)
 
     print(
         f"[INFO] Environment successfully created using {env_manager} in directory: '{env_dir}'",
