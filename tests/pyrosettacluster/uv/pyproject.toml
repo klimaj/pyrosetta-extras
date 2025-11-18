@@ -1,0 +1,5 @@
+[project]
+name = "{name}"
+version = "0.1.0"
+requires-python = "=={py_version}"
+dependencies = []
