@@ -279,7 +279,7 @@ def main(
             # Detect platform
             plat = detect_platform()
             toml_format = "pixi.toml"
-            template_toml_file = Path(__file__).resolve().parent.parent / "tests" / "pyrosettacluster" / "pixi" / toml_format
+            template_toml_file = Path(__file__).resolve().parent.parent / "actions" / "pyrosettacluster" / "pixi" / toml_format
             with open(template_toml_file, "r") as f:
                 toml = f.read().format(
                     rosettacommons_conda_channel=ROSETTACOMMONS_CONDA_CHANNEL,
@@ -292,7 +292,7 @@ def main(
         if not toml:
             py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
             toml_format = "pyproject.toml"
-            template_toml_file = Path(__file__).resolve().parent.parent / "tests" / "pyrosettacluster" / "uv" / toml_format
+            template_toml_file = Path(__file__).resolve().parent.parent / "actions" / "pyrosettacluster" / "uv" / toml_format
             with open(template_toml_file, "r") as f:
                 toml = f.read().format(
                     name=os.path.basename(env_dir),
