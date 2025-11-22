@@ -3,6 +3,7 @@ __author__ = "Jason C. Klima"
 
 import argparse
 import pyrosetta
+import pyrosetta.distributed
 import os
 
 from datetime import datetime
@@ -226,12 +227,23 @@ def main(
     scorefile: Optional[str],
     decoy_name: Optional[str],
     env_dir: Optional[str],
+    pyrosetta_init_flags: Optional[str],
     pandas_secure: bool,
 ) -> None:
     """
     Dump the PyRosettaCluster environment file(s) based on metadata from a PyRosettaCluster result.
     """
-    if scorefile and (not scorefile.endswith(".json")):
+    if (
+        isinstance(input_file, str)
+        and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
+        and pyrosetta_init_flags
+    ):
+        pyrosetta.distributed.init(pyrosetta_init_flags)
+
+    if (
+        isinstance(scorefile, str)
+        and not scorefile.endswith(".json")
+    ):
         if pandas_secure:
             pyrosetta.secure_unpickle.add_secure_package("pandas")
         else:
@@ -466,6 +478,23 @@ if __name__ == "__main__":
     )
 
     # -------------------------------------------------------------------------
+    # PyRosetta initialization options
+    # -------------------------------------------------------------------------
+    parser.add_argument(
+        "--pyrosetta_init_flags",
+        type=str,
+        required=False,
+        default=None,
+        help=(
+            "Optional PyRosetta initialization flags to use when loading a pickled or base64-encoded "
+            "PyRosettaCluster output decoy file (i.e., '.pkl_pose', '.pkl_pose.bz2', '.b64_pose', "
+            "or '.b64_pose.bz2' file type extensions) with the `--input_file` flag, specifying any "
+            "extra Rosetta topology `.params` files or patch files required to load the `Pose` object "
+            "into memory. Ignored for all other input file types or scorefile inputs."
+        ),
+    )
+
+    # -------------------------------------------------------------------------
     # Security option for loading pickled `pandas.DataFrames` objects
     # -------------------------------------------------------------------------
     parser.add_argument(
@@ -487,5 +516,6 @@ if __name__ == "__main__":
         scorefile=args.scorefile,
         decoy_name=args.decoy_name,
         env_dir=args.env_dir,
+        pyrosetta_init_flags=args.pyrosetta_init_flags,
         pandas_secure=args.pandas_secure,
     )
