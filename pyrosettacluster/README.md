@@ -4,7 +4,7 @@
 The virtual environment configuration used for the original simulation is cached in the PyRosettaCluster output decoy file and in the _full-record_ output scorefile. 
 Please refer to the following table to select _one_ environment file extraction method based on the file type being used to recreate the original virtual environment:
 
-| File type extension | Output type | Extraction method #1<br>(_without_ PyRosetta) | Extraction method #2<br>(_requires_ PyRosetta) |
+| File type extension | Output file type | Extraction method #1<br>(_without_ PyRosetta) | Extraction method #2<br>(_requires_ PyRosetta) |
 | --- | --- | --- | --- |
 | `.pdb` | Decoy | Read file → Copy → Paste into new file | Run `dump_env_file.py` helper |
 | `.pdb.bz2` | Decoy | Unzip with `bzip2` → Read file → Copy → Paste into new file | Run `dump_env_file.py` helper |
@@ -43,6 +43,7 @@ Run `python recreate_env.py` to recreate the virtual environment.
 
 ## 🚀 3️⃣ Reproduce PyRosettaCluster simulation!
 Use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script.
+
 
 
 
