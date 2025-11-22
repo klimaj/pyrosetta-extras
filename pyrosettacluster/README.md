@@ -36,12 +36,13 @@ Run `python recreate_env.py` to recreate the virtual environment.
 > If using `conda`/`mamba`, any python interpreter may be used.
 
 > [!NOTE]
-> If using the `uv` environment manager, the PyRosetta installation step may be subsequently required if using the `pyrosetta-installer` package method. See the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) for details.
+> If using the `uv` environment manager, the PyRosetta installation step may be subsequently required if using the `pyrosetta-installer` package installation method. See the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) for details.
 
 > [!TIP]
 > See `python recreate_env.py --help` for details.
 
 ## 🚀 3️⃣ Reproduce PyRosettaCluster simulation!
 Use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script.
+
 
 
