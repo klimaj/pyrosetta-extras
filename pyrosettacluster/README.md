@@ -1,4 +1,33 @@
-# 🏘️ Recreating Environments for PyRosettaCluster
+# ☀️ Creating Environments for PyRosettaCluster
+PyRosettaCluster supports running reproducible PyRosetta simulations from reproducible virtual environments created with `conda`, `mamba`, `uv`, and `pixi` environment managers. Please install PyRosetta (with `cxx11thread.serialization` support) and the following packages to get started!
+- `attrs`
+- `billiard`
+- `blosc`
+- `cloudpickle`
+- `cryptography`
+- `dask`
+- `dask-jobqueue`
+- `distributed`
+- `gitpython`
+- `numpy`
+- `pandas`
+- `python-xz`
+- `scipy`
+- `traitlets`
+
+[Official Full List of Packages](https://github.com/RosettaCommons/rosetta/blob/main/tests/benchmark/tests/__init__.py#L69-L84)
+
+> [!IMPORTANT]
+> It is recommended to install the required packages individually when using the `pixi`/`uv` environment managers.
+>
+> _Explanation:_ If using `pixi`/`uv` environment managers, it is highly recommended to avoid using the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package to install the required `pyrosetta.distributed` framework packages (which installs subpackages using `pip install ...`, so the subpackages will _not_ get registered as installed in the exported `pixi`/`uv` environment file). Instead, please install the required `pyrosetta.distributed` framework packages individually to register them properly in the environment.
+
+> [!IMPORTANT]
+> It is recommended to use either the `pixi`, `conda` or `mamba` environment manager.
+> 
+> _Explanation:_ If using the `uv` environment manager, currently the only way to install PyRosetta is using the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package, which installs the `pyrosetta` package using `pip install ...` (instead of `uv pip install ...`), so `pyrosetta` will _not_ get registered as installed in the exported environment file. Furthermore, when recreating a `uv` environment (see below) using the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package, the syntax does not allow specifying an exact PyRosetta version (automatically defaulting to the latest published PyRosetta version), and therefore installing the correct PyRosetta version in the recreated `uv` environment depends fortuitously on a prompt `uv` environment recreation after the original `uv` environment creation (typically within the same week). For this reason, `pixi`, `conda` and `mamba` are highly preferred environment managers instead of `uv` for reproducible environments used for reproducible PyRosettaCluster simulations. Note that the PyRosetta developers are working on supporting a bona fide `uv pip install pyrosetta=X.Y` syntax in the future — stay tuned!
+
+# 🏘️ *Re*creating Environments for PyRosettaCluster
 
 ## ✂ 1️⃣ Extract environment file ️
 The virtual environment configuration used for the original simulation is cached in the PyRosettaCluster output decoy file and in the _full-record_ output scorefile. 
@@ -57,6 +86,7 @@ Run `python recreate_env.py` to recreate the virtual environment.
 
 ## 🚀 3️⃣ Reproduce PyRosettaCluster simulation!
 Use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script.
+
 
 
 
