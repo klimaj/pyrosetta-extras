@@ -24,13 +24,12 @@ Run `python recreate_env.py` to recreate the virtual environment.
 
 > [!CAUTION]
 > This script runs a subprocess with one of the following commands:<br>
-> - `conda env create ...`: when using the 'conda' environment manager<br>
-> - `mamba env create ...`: when using the 'mamba' environment manager<br>
-> - `uv pip sync ...`: when using the 'uv' environment manager<br>
-> - `pixi install ...`: when using the 'pixi' environment manager<br>
-> Installing certain packages may not be secure, so please only run with an input environment file you trust!
-> Learn more about PyPI security at <https://pypi.org/security> and conda security
-> at <https://www.anaconda.com/docs/reference/security>.
+> - `conda env create ...`: when using the `conda` environment manager<br>
+> - `mamba env create ...`: when using the `mamba` environment manager<br>
+> - `uv pip sync ...`: when using the `uv` environment manager<br>
+> - `pixi install ...`: when using the `pixi` environment manager<br>
+> Installing certain packages may not be secure, so please only run with an input environment file you trust!<br>
+> 👉 Learn more about [PyPI security](https://pypi.org/security) and [conda security](https://www.anaconda.com/docs/reference/security).
 
 > [!NOTE]
 > If using `pixi`/`uv` environment managers, please use the _system python interpreter_, since the script creates a new `pixi`/`uv` environment and cannot be run from an existing virtual environment.
@@ -41,3 +40,4 @@ Run `python recreate_env.py` to recreate the virtual environment.
 
 ## 🚀 3️⃣ Reproduce PyRosettaCluster simulation!
 Use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script.
+
