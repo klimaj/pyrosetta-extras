@@ -431,12 +431,8 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
                 "Please ensure that the uv project 'requirements.txt' file "
                 "is in the uv project directory, then try again."
             )
-
         # Install packages strictly from requirements.txt
         env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}'"
-        # env_create_cmd = f"uv venv --seed && uv pip sync '{req_file}'" # Works with original pyproject.toml file
-        # env_create_cmd = f"uv venv --seed && uv pip install -r '{req_file}'" # Works with original pyproject.toml file
-        # env_create_cmd = f"uv add --project '{env_dir}' --requirements '{req_file}'" # Works with new/original pyproject.toml file
 
     elif env_manager == "conda":
         yml_file = os.path.join(env_dir, "environment.yml")
@@ -488,11 +484,6 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
         # uv environment recreation after the original uv environment creation.
         print("[INFO] Running PyRosetta installer in uv environment...")
         install_pyrosetta_file = Path(__file__).resolve().parent / "install_pyrosetta.py"
-        # install_pyrosetta_script = install_pyrosetta_file.read_text()
-        # subprocess.run(
-        #     ["uv", "run", "--project", f"'{env_dir}'", "python", "-c", install_pyrosetta_script],
-        #     check=True,
-        # )
         run_subprocess(
             f"uv run --project '{env_dir}' python '{install_pyrosetta_file}'",
             cwd=env_dir,
