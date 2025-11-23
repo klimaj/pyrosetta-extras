@@ -130,8 +130,8 @@ Then, use the python interpreter of the recreated environment to run your PyRose
 ```
 from pyrosetta.distributed.cluster import reproduce
 
-# Import (or copy/paste) the original user-provided PyRosetta protocols committed to the original GitHub repository:
-from my_protocols import protocol_1, protocol_2  # Change depending on the original GitHub repository
+# Import (or copy/paste) the original user-provided PyRosetta protocols
+from my_protocols import protocol_1, protocol_2  # Change depending on the original GitHub repository structure
 
 def main():
     reproduce(
@@ -151,11 +151,6 @@ def main():
             "scratch_dir": ...,
             "project_name": ...,
             "simulation_name": ...,
-            "output_decoy_types": ...,
-            "output_scorefile_types": ...,
-            "author": ...,
-            "email": ...,
-            "license": ...,
         },
         clients_indices=...,
         resources=...,
@@ -169,4 +164,5 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
