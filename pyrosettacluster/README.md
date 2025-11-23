@@ -85,14 +85,46 @@ Run `python recreate_env.py` to recreate the virtual environment.
 > See `python recreate_env.py --help` for details.
 
 ## 🚀 3️⃣ Reproduce PyRosettaCluster simulation!
-Use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script.
+Use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script. Here's a template script to get started!
+```
+from pyrosetta.distributed.cluster import reproduce
 
+# Import (or copy/paste) the original user-provided PyRosetta protocols committed to the original GitHub repository:
+from my_protocols import original_protocols  # Change depending on the original GitHub repository
 
+def main():
+    reproduce(
+        # Input either a PyRosettaCluster output decoy file or output PyRosetta initialization file
+        input_file=...,
 
+        # Or input a PyRosettaCluster scorefile and decoy name
+        scorefile=...,
+        decoy_name=...,
 
+        # Optional configurations:
+        protocols=original_protocols, # Can be `None` for auto-detection
+        clients=...,
+        input_packed_pose=...,
+        instance_kwargs={
+            "output_path": ...,
+            "scratch_dir": ...,
+            "project_name": ...,
+            "simulation_name": ...,
+            "output_decoy_types": ...,
+            "output_scorefile_types": ...,
+            "author": ...,
+            "email": ...,
+            "license": ...,
+        },
+        clients_indices=...,
+        resources=...,
+        skip_corrections=...,
+        init_from_file_kwargs=...,
+    )
 
+if __name__ == "__main__":
+    main()
+```
+Save your PyRosettaCluster simulation reproduction script, and run it with the newly recreated environment's python interpreter.
 
-
-
-
-
+Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
