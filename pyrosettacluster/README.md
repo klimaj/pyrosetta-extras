@@ -33,6 +33,8 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 # 💨 Running PyRosettaCluster simulations
 Please see the [official PyRosettaCluster documentation](https://graylab.jhu.edu/PyRosetta.documentation/pyrosetta.distributed.cluster.html#pyrosetta.distributed.cluster.PyRosettaCluster) for all of the configuration options.
 > [!CAUTION]
+> PyRosettaCluster uses the [cloudpickle module](https://github.com/cloudpipe/cloudpickle), which can lead to arbitrary code execution resulting in a critical security vulnerability. **Please only run (1) with user-provided PyRosetta protocols from trusted sources, and (2) over a secure network (unless running on a local network).**
+> 
 > A primary feature of PyRosettaCluster is that arbitrary user-provided PyRosetta protocols are pickled, sent over a network, and unpickled, which allows the user to run customized macromolecular design and modeling workflows. Unless running solely on a local network, it is _highly_ recommended to operate PyRosettaCluster behind a trusted private network segment (i.e., a firewall) or setup TLS/SSL communication between network endpoints for authenticated and encrypted transmission of data. In PyRosettaCluster, there are two easy ways to setup TLS/SSL communication:
 >
 > **(1)** Use the `PyRosettaCluster(security=True)` option to invoke the `cryptography` package to automatically generate a `Security.temporary()` object on-the-fly through the `dask` or `dask-jobqueue` package.
@@ -44,7 +46,7 @@ Please see the [official PyRosettaCluster documentation](https://graylab.jhu.edu
 > ```
 
 > [!IMPORTANT]
-> PyRosettaCluster is a tool for reproducible computational macromolecular modeling and design. It is up to the user to define their PyRosetta protocols with reproducibility in mind – meaning PyRosetta protocol ought to be _deterministic_:
+> PyRosettaCluster is a tool for reproducible computational macromolecular modeling and design. It is up to the user to define their PyRosetta protocols with reproducibility in mind – meaning user-provided PyRosetta protocols ought to be _deterministic_:
 > 
 > **(1)** Set seeds for any _impure functions_ (i.e., non-deterministic functions) implemented.
 >  - Pseudo-random seeds can be hard-coded into PyRosetta protocols, distributed as `kwargs` key values with each submitted task, or be dynamically set based on each PyRosetta protocol's automatically-assigned random seed accessible through each PyRosetta protocol's `kwargs["PyRosettaCluster_seed"]` key value.
@@ -164,5 +166,6 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
