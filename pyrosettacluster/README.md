@@ -49,7 +49,7 @@ Please see the [official PyRosettaCluster documentation](https://graylab.jhu.edu
 > PyRosettaCluster is a tool for reproducible computational macromolecular modeling and design. It is up to the user to define their PyRosetta protocols with reproducibility in mind – meaning user-provided PyRosetta protocols ought to be _deterministic_:
 > 
 > **(1)** Set seeds for any _impure functions_ (i.e., non-deterministic functions) implemented.
->  - Pseudo-random seeds can be hard-coded into PyRosetta protocols, distributed as `kwargs` key values with each submitted task, or be dynamically set based on each PyRosetta protocol's automatically-assigned random seed accessible through each PyRosetta protocol's `kwargs["PyRosettaCluster_seed"]` key value.
+>  - Pseudo-random seeds can either _(i)_ be hard-coded into PyRosetta protocols, _(ii)_ distributed as `kwargs` key values with each submitted task, or _(iii)_ be dynamically set based on each PyRosetta protocol's automatically-assigned random seed accessible through each PyRosetta protocol's `kwargs["PyRosettaCluster_seed"]` key value.
 > 
 > **(2)** If impure functions cannot be made pure through controlling the underlying randomness, please do _not_ rely on them to update the `Pose` in meaningful ways.
 >  - i.e., a randomly-named score key might be alright, but not randomly selecting the number of `Pose` conformational updates.
@@ -166,6 +166,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
