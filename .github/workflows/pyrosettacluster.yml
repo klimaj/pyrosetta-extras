@@ -1,4 +1,4 @@
-name: PyRosetta
+name: PyRosettaCluster Tests
 
 on:
   push:
