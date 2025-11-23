@@ -40,6 +40,7 @@ Please refer to the following table to select _one_ environment file extraction 
 | `.pkl_pose`, `.pkl_pose.bz2`, `.b64_pose`, `.b64_pose.bz2` | Decoy | | Run `dump_env_file.py` helper |
 | `.json` | Full-record scorefile | Read file → Copy → Paste into new file | Run `dump_env_file.py` helper |
 | Pickled `pandas.DataFrame`<br>(`.gz`, `.xz`, `.tar`, etc.) | Full-record scorefile | | Run `dump_env_file.py` helper |
+| `.init`, `.init.bz2` | PyRosetta initialization file | | Run `dump_env_file.py` helper |
 
 > [!NOTE]  
 > **Extraction method #1:** If copy/pasting into a new file, the environment file string is located in the `record["instance"]["environment"]` nested key value of the PyRosettaCluster full record. Please paste it into one of the following file names (as expected in the next step) in a new folder, depending on the environment manager you're using to recreate the environment:
@@ -128,3 +129,4 @@ if __name__ == "__main__":
 Save your PyRosettaCluster simulation reproduction script, and run it with the newly recreated environment's python interpreter.
 
 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
