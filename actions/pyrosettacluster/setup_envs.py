@@ -16,7 +16,7 @@ from actions.pyrosettacluster.utils import (
 )
 
 
-def setup_pixi_environment(env_dir):
+def setup_pixi_environment(env_dir, timeout):
     """
     Create a fresh pixi environment containing 'pyrosetta' and 'pyrosetta-distributed' packages.
 
@@ -56,12 +56,12 @@ def setup_pixi_environment(env_dir):
 
     # Install pixi environment
     print("Running `pixi install`...")
-    subprocess.run(["pixi", "install"], cwd=env_path, check=True)
+    subprocess.run(["pixi", "install"], cwd=env_path, check=True, timeout=timeout)
 
     print(f"Pixi environment setup complete in directory: '{env_path}'.")
 
 
-def setup_uv_environment(env_dir):
+def setup_uv_environment(env_dir, timeout):
     """
     Create a fresh uv environment using the 'pyrosetta-installer' package.
 
@@ -111,6 +111,7 @@ def setup_uv_environment(env_dir):
         ],
         check=True,
         cwd=str(env_path),
+        timeout=timeout,
     )
 
     # Run PyRosetta installer with mirror fallback
@@ -124,7 +125,7 @@ def setup_uv_environment(env_dir):
     print(f"Uv environment setup complete in directory: '{env_path}'.")
 
 
-def setup_conda_environment(env_dir, env_manager="conda"):
+def setup_conda_environment(env_dir, timeout, env_manager="conda"):
     """
     Create a fresh conda/mamba environment containing 'pyrosetta' and 'pyrosetta-distributed' packages.
 
@@ -167,6 +168,7 @@ def setup_conda_environment(env_dir, env_manager="conda"):
         subprocess.run(
             [env_manager, "env", "create", "-f", env_file, "-p", str(env_path)],
             check=True,
+            timeout=timeout,
         )
 
     print(f"{env_manager.title()} environment setup complete in directory: '{env_path}'.")
@@ -177,12 +179,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--env_manager', type=str)
     parser.add_argument('--env_dir', type=str)
+    parser.add_argument('--timeout', type=float)
     args = parser.parse_args()
     if args.env_manager == "pixi":
-        setup_pixi_environment(args.env_dir)
+        setup_pixi_environment(args.env_dir, args.timeout)
     elif args.env_manager == "uv":
-        setup_uv_environment(args.env_dir)
+        setup_uv_environment(args.env_dir, args.timeout)
     elif args.env_manager in ("conda", "mamba"):
-        setup_conda_environment(args.env_dir, env_manager=args.env_manager)
+        setup_conda_environment(args.env_dir, args.timeout, env_manager=args.env_manager)
     else:
         raise NotImplementedError(args.env_manager)

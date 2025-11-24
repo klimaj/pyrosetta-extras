@@ -72,7 +72,12 @@ class TestEnvironmentReproducibility(unittest.TestCase):
 
         return returncode
 
-    def recreate_environment_test(self, environment_manager="conda", verbose=True):
+    def recreate_environment_test(
+        self,
+        environment_manager="conda",
+        timeout=(5.5 * 60 * 60), # 5.5 hours
+        verbose=True,
+    ):
         """Test for PyRosettaCluster decoy reproducibility in a recreated virtual environment."""
         self.assertIn(environment_manager, ("conda", "mamba", "uv", "pixi"))
 
@@ -83,11 +88,11 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         original_env_dir = os.path.join(self.workdir.name, original_env_name)
         setup_env_script = os.path.join(os.path.dirname(__file__), "setup_envs.py")
         module = os.path.splitext(os.path.basename(setup_env_script))[0]
-        cmd = "{0} -u -m {1} --env_manager '{2}' --env_dir '{3}'".format(
-            sys.executable,
-            module,
-            environment_manager,
-            original_env_dir,
+        cmd = (
+            f"{sys.executable} -u -m {module} "
+            f"--env_manager '{environment_manager}' "
+            f"--env_dir '{original_env_dir}' "
+            f"--timeout '{timeout}'"
         )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
@@ -185,12 +190,11 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             f"Reproduced '{environment_manager}' environment directory was not created: '{reproduce_env_dir}'",
         )
         recreate_env_script = Path(__file__).resolve().parent.parent.parent / "pyrosettacluster" / "recreate_env.py"
-        timeout = 999
         cmd = (
             f"{sys.executable} -u {recreate_env_script} "
             f"--env_dir '{reproduce_env_dir}' "
             f"--env_manager '{environment_manager}' "
-            f"--timeout '{timeout}' "
+            f"--timeout '{timeout}'"
         )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
