@@ -1,8 +1,16 @@
 # 🧬☁️ PyRosettaCluster
 PyRosettaCluster is a Python framework for reproducible, high-throughput job distribution of user-defined PyRosetta protocols efficiently parallelized on the user's local computer, high-performance computing (HPC) cluster, or elastic cloud computing infrastructure with available compute resources.
 
+## Table of Contents
+
 - [Creating Environments for PyRosettaCluster](#creating-environments-for-pyrosettacluster)
 - [Running PyRosettaCluster Simulations](#running-pyrosettacluster-simulations)
+- [Recreating Environments for PyRosettaCluster](#recreating-environments-for-pyrosettacluster)
+  1. [Extract Environment Configuration ️](#extract-environment-configuration)
+  2. [Recreate Environment](#recreate-environment)
+- [Reproducing PyRosettaCluster Simulations](#reproducing-pyrosettacluster-simulations)
+  1. [Clone Original Repository](#clone-original-repository)
+  2. [Run Reproduction Script](#run-reproduction-script)
 
 ---
 <a name="creating-environments-for-pyrosettacluster"></a>
@@ -66,8 +74,10 @@ Please see the [official PyRosettaCluster documentation](https://graylab.jhu.edu
 >
 > In general, the determinism can be (and ought to be) strictly controlled when developing PyRosetta protocols. Note that PyRosettaCluster can still be used as a job distributor, even if PyRosetta protocol determinism is impossible for a specific application.
 
+<a name="recreating-environments-for-pyrosettacluster"></a>
 # 🏘️ *Re*creating Environments for PyRosettaCluster
 
+<a name="extract-environment-configuration"></a>
 ## 1️⃣ ✂ Extract Environment Configuration ️
 The virtual environment configuration used for the original simulation is cached in the PyRosettaCluster output decoy file and in the _full-record_ output scorefile. 
 Please refer to the following table to select _one_ environment file extraction method based on the file type being used to recreate the original virtual environment:
@@ -106,6 +116,7 @@ Please refer to the following table to select _one_ environment file extraction 
 > [!TIP]
 > **Extraction method #2:** See `python dump_env_file.py --help` for details.
 
+<a name="recreate-environment"></a>
 ## 2️⃣ 🛠️ *Re*create Environment
 Run `python recreate_env.py` to recreate the virtual environment.
 
@@ -128,7 +139,10 @@ Run `python recreate_env.py` to recreate the virtual environment.
 > [!TIP]
 > See `python recreate_env.py --help` for details.
 
+<a name="reproducing-pyrosettacluster-simulations"></a>
 # 🚀 Reproducing PyRosettaCluster Simulations
+<a name="clone-original-repository"></a>
+##  1️⃣ 💽 Clone Original Repository
 In order to re-run the same user-provided PyRosetta protocols, clone the original GitHub repository and checkout the original GitHub SHA1 used by the original PyRosettaCluster simulation. You'll need to know the owner and repository name (and if not, don't worry, there are ways to search GitHub by SHA1):
 ```
 git clone --no-checkout https://github.com/<owner>/<repo>.git
@@ -136,6 +150,8 @@ cd <repo>
 git fetch origin <SHA1>
 git checkout <SHA1>
 ```
+<a name="run-reproduction-script"></a>
+## 2️⃣ 💨 Run Reproduction Script
 Then, use the python interpreter of the recreated environment to run your PyRosettaCluster simulation reproduction script. Here's a template script to get started!
 ```
 from pyrosetta.distributed.cluster import reproduce
@@ -174,6 +190,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
