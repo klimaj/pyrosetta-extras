@@ -27,7 +27,7 @@ def setup_pixi_environment(env_dir, timeout):
     """
     # Detect Python version
     py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-    py_feature = f"py{sys.version_info.major}{sys.version_info.minor}.{sys.version_info.micro}"
+    py_feature = f"py{sys.version_info.major}{sys.version_info.minor}"
 
     # Detect platform
     plat = detect_platform()
