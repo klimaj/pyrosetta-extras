@@ -64,8 +64,8 @@ def setup_uv_environment(env_dir, timeout):
 
     Note: this requires that `uv` is an executable installed and on `${PATH}`. This function:
     - detects the current Python version
-    - adds 'pyrosetta-installer' via `uv add ...`
-    - runs the PyRosetta installer using `uv run python -c ...`
+    - adds 'pyrosetta-installer', 'pip', and `pyrosetta.distributed` dependencies via `uv add ...`
+    - runs the PyRosetta installer using `uv run python ...`
     """
     env_path = Path(env_dir)
     if env_path.exists():
