@@ -33,10 +33,6 @@ def setup_pixi_environment(env_dir, timeout):
     # Detect platform
     plat = detect_platform()
 
-    print("Cwd:", os.getcwd())
-    print("Current file:", str(Path(__file__).resolve()))
-    print("sys.path:", sys.path)
-
     template_toml_file = Path(__file__).resolve().parent / "pixi" / "pixi.toml"
     with open(template_toml_file, "r") as f:
         pixi_toml = f.read().format(
@@ -74,19 +70,9 @@ def setup_uv_environment(env_dir, timeout):
     if env_path.exists():
         raise FileExistsError(f"The specified uv environment path already exists: '{env_path}'.")
 
-    # Detect Python version
-    # py_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-
-    print("Cwd:", os.getcwd())
-    print("Current file:", str(Path(__file__).resolve()))
-    print("sys.path:", sys.path)
 
     # Create uv environment using the current Python
     print(f"Creating uv environment at '{env_path}'...")
-    # subprocess.run(
-    #     ["uv", "init", str(env_path), "--python", py_version],
-    #     check=True,
-    # )
     os.makedirs(env_dir, exist_ok=True)
     py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     template_toml_file = Path(__file__).resolve().parent / "uv" / "pyproject.toml"
@@ -120,6 +106,7 @@ def setup_uv_environment(env_dir, timeout):
     subprocess.run(
         ["uv", "run", "--project", str(env_path), "python", install_pyrosetta_file],
         check=True,
+        timeout=timeout,
     )
 
     print(f"Uv environment setup complete in directory: '{env_path}'.")
