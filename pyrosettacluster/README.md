@@ -36,7 +36,7 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 > [!IMPORTANT]
 > It is recommended to install the required packages individually when using the `uv` environment manager.
 >
-> _Explanation:_ If using the `uv` environment manager, it is highly recommended to avoid using the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package to install the required `pyrosetta.distributed` framework packages (which installs subpackages using `pip install ...`, so the subpackages will _not_ get registered as installed in the exported `uv` environment file). Instead, please install the required `pyrosetta.distributed` framework packages individually to register them properly in the uv project.
+> _Explanation:_ If using the `uv` environment manager, it is highly recommended to avoid using the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package to install the required `pyrosetta.distributed` framework packages (which installs subpackages using `pip install ...`, so the subpackages will _not_ get registered as installed in the exported `uv` environment file). Instead, please install the required `pyrosetta.distributed` framework packages individually to register them properly in the uv environment.
 
 > [!IMPORTANT]
 > It is recommended to use either the `pixi`, `conda` or `mamba` environment manager.
@@ -106,12 +106,12 @@ Please refer to the following table to select _one_ environment file extraction 
 > | `pixi` | `pixi.toml` / `pypyroject.toml` |
 > | `uv` | `pyproject.toml` |
 >
-> Also note the `record["instance"]["sha1"]` nested key value holding the GitHub SHA1 required to reproduce the PyRosettaCluster simulation!
+> Also note the `record["instance"]["sha1"]` nested key value holding the GitHub SHA1 required to [reproduce the PyRosettaCluster simulation]((#clone-original-repository))!
 
 > [!NOTE]  
 > **Extraction method #2:** If running `dump_env_file.py`, the `pyrosetta` package must be installed in any existing virtual environment, and that virtual environment's python interpreter used to run the script.
 >
-> Also note the printed GitHub SHA1 required to reproduce the PyRosettaCluster simulation!
+> Also note the printed GitHub SHA1 required to [reproduce the PyRosettaCluster simulation](#clone-original-repository)!
 
 > [!TIP]
 > **Extraction method #2:** See `python dump_env_file.py --help` for details.
@@ -134,7 +134,7 @@ Run `python recreate_env.py` to recreate the virtual environment.
 > If using `conda`/`mamba`, any python interpreter may be used.
 
 > [!NOTE]
-> If using the `uv` environment manager, the PyRosetta installation step may be subsequently required if using the `pyrosetta-installer` package installation method.  Note that installing the identical PyRosetta version of the original `uv` environment in the recreated `uv` environment depends fortuitously on a prompt `uv` environment recreation after the original `uv` environment creation (typically within the same week). See the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) for details.
+> If using the `uv` environment manager, the PyRosetta installation step may be subsequently required if using the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package installation method.  Note that installing the identical PyRosetta version of the original `uv` environment in the recreated `uv` environment depends fortuitously on a prompt `uv` environment recreation after the original `uv` environment creation (typically within the same week). See the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) for details.
 
 > [!TIP]
 > See `python recreate_env.py --help` for details.
@@ -190,6 +190,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
