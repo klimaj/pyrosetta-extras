@@ -1,3 +1,8 @@
+"""
+Set up the initial conda, mamba, uv, or pixi environment in which
+the original PyRosettaCluster simulation runs during unit testing.
+"""
+
 __author__ = "Jason C. Klima"
 
 

@@ -1,3 +1,7 @@
+"""
+Perform PyRosetta installation with the PyPI `pyrosetta-installer` package.
+"""
+
 __author__ = "Jason C. Klima"
 
 

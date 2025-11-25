@@ -1,3 +1,8 @@
+"""
+Exemplary user-facing methods imitating the original PyRosettaCluster simulation
+and the reproduced PyRosettaCluster simulation during unit testing.
+"""
+
 __author__ = "Jason C. Klima"
 
 
