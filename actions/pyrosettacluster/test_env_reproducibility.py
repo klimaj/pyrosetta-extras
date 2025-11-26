@@ -76,7 +76,7 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         self,
         environment_manager="conda",
         timeout=(3 * 60 * 60), # 3 hours per subprocess
-        verbose=True,
+        verbose=False,
     ):
         """Test for PyRosettaCluster decoy reproducibility in a recreated virtual environment."""
         self.assertIn(environment_manager, ("conda", "mamba", "uv", "pixi"))
