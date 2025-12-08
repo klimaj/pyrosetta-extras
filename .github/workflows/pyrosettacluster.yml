@@ -1,0 +1,180 @@
+name: PyRosettaCluster Tests
+
+on:
+  push:
+    branches: ['*']
+    tags: ['*']
+  pull_request:
+    branches: ['*']
+  schedule:
+    # Run Every Monday 4 AM UTC
+    - cron: '0 4 * * 1'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+
+  # ============================================================
+  # PIXI JOB
+  # ============================================================
+  pixi:
+    name: Pixi
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Pixi
+        run: |
+          curl -fsSL https://pixi.sh/install.sh | bash
+          echo "$HOME/.pixi/bin" >> $GITHUB_PATH
+
+      - name: Verify Pixi
+        run: |
+          export PATH="$HOME/.pixi/bin:$PATH"
+          pixi --version
+
+      - name: Add repo root to PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run tests (pixi)
+        shell: bash
+        run: |
+          export PATH="$HOME/.pixi/bin:$PATH"
+          which python
+          python --version
+          python -u -m unittest actions.pyrosettacluster.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_pixi -v
+
+
+  # ============================================================
+  # UV JOB
+  # ============================================================
+  uv:
+    name: Uv
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          uv --version
+
+      - name: Add repo root to PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run tests (uv)
+        shell: bash
+        run: |
+          which python
+          python --version
+          python -u -m unittest actions.pyrosettacluster.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_uv -v
+
+
+  # ============================================================
+  # CONDA JOB
+  # ============================================================
+  conda:
+    name: Conda
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          auto-update-conda: true
+          activate-environment: conda-job
+          use-mamba: false
+          channel-priority: strict
+
+      - name: Add repo root to PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run tests (conda)
+        shell: bash
+        run: |
+          which python
+          python --version
+          python -u -m unittest actions.pyrosettacluster.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_conda -v
+
+
+  # ============================================================
+  # MAMBA JOB
+  # ============================================================
+  mamba:
+    name: Mamba
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: ''
+          channel-priority: strict
+
+      - name: Install Mamba
+        shell: bash -l {0}
+        run: |
+          conda install -y -n base -c conda-forge mamba
+
+      - name: Set Mamba cache
+        shell: bash -l {0}
+        run: |
+          mkdir -p $HOME/.conda/pkgs
+          export CONDA_PKGS_DIRS="$HOME/.conda/pkgs"
+          echo "CONDA_PKGS_DIRS=$CONDA_PKGS_DIRS"
+
+      - name: Check Mamba
+        shell: bash -l {0}
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          export CONDA_PKGS_DIRS="$HOME/.conda/pkgs"
+          echo "PATH=$PATH"
+          which mamba
+          mamba --version
+
+      - name: Add repo root to PYTHONPATH
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          export CONDA_PKGS_DIRS="$HOME/.conda/pkgs"
+          echo "PYTHONPATH=$PYTHONPATH:${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run tests (mamba)
+        shell: bash -l {0}
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          export CONDA_PKGS_DIRS="$HOME/.conda/pkgs"
+          which python
+          python --version
+          python -u -m unittest actions.pyrosettacluster.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_mamba -v

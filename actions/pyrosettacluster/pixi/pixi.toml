@@ -1,0 +1,17 @@
+[workspace]
+channels = ["{rosettacommons_conda_channel}", "conda-forge"]
+name = "{name}"
+platforms = ["{plat}"]
+version = "1.0.0"
+
+[dependencies]
+pyrosetta = "*"
+
+[pypi-dependencies]
+pyrosetta-distributed = "*"
+
+[feature.{py_feature}.dependencies]
+python = "{py_version}"
+
+[environments]
+{py_feature} = ["{py_feature}"]

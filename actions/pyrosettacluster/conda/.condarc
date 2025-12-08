@@ -1,0 +1,3 @@
+channels:
+  - {rosettacommons_conda_channel}
+  - conda-forge
