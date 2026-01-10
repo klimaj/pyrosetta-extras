@@ -1,0 +1,60 @@
+name: PyRosetta quarterly install test
+
+on:
+  # push:
+  # pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    name: ${{ matrix.os.os_name }} / py${{ matrix.python }} / ${{ matrix.flavor }} / ${{ matrix.mirror.name }}
+    runs-on: ${{ matrix.os.runs_on }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+        os:
+          - os_name: linux
+            runs_on: ubuntu-latest
+          - os_name: mac-x86
+            runs_on: macos-15-intel
+          - os_name: mac-arm
+            runs_on: macos-15
+
+        # Quarterly “flavors”
+        flavor:
+          - release
+          - minsizerel
+          - release.cxx11thread.serialization
+
+        # Mirrors
+        mirror:
+          - name: west
+            base_url: https://west.rosettacommons.org/pyrosetta/quarterly
+          - name: east
+            # Note: east already includes "release-quarterly" and then flavor subdirs
+            base_url: https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      - name: Upgrade pip tooling
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+      - name: Install PyRosetta quarterly build
+        run: |
+          pip install --no-cache-dir pyrosetta \
+            --find-links "${{ matrix.mirror.base_url }}/${{ matrix.flavor }}"
+
+      - name: Sanity check import + init
+        run: |
+          python -c "import pyrosetta; pyrosetta.init(); print('init ok')"
