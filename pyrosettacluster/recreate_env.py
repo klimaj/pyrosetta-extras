@@ -22,6 +22,7 @@ __author__ = "Jason C. Klima"
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -60,6 +61,13 @@ def run_subprocess(
         raise RuntimeError(cmd) from ex
 
 
+def requirement_present(req_file: str, name: str) -> bool:
+    """Test if a package name is specified in an input 'requirements.txt' file."""
+    with open(req_file, "r") as f:
+        contents = f.read()
+    return bool(re.search(rf"^{re.escape(name)}==", contents, flags=re.MULTILINE))
+
+
 def recreate_environment(env_dir: str, env_manager: str, timeout: float):
     """
     Recreate an environment using pixi, uv, conda, or mamba inside `env_dir`.
@@ -94,6 +102,8 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
             )
         # Install packages strictly from requirements.txt
         env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}'"
+        # Test if the 'pyrosetta-installer' package is specified
+        use_pyrosetta_installer = requirement_present(req_file, "pyrosetta-installer")
 
     elif env_manager == "conda":
         yml_file = os.path.join(env_dir, "environment.yml")
@@ -139,7 +149,7 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
     if env_manager != "mamba":
         run_subprocess(env_create_cmd, cwd=env_dir, timeout=timeout)
     
-    if env_manager == "uv":
+    if env_manager == "uv" and use_pyrosetta_installer:
         # The recreated uv environment uses the PyPI 'pyrosetta-installer' package, which does not allow specifying PyRosetta version.
         # Therefore, installing the correct PyRosetta version in the recreated uv environment depends fortuitously on a prompt
         # uv environment recreation after the original uv environment creation.

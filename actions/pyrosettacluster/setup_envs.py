@@ -15,6 +15,7 @@ import tempfile
 from pathlib import Path
 
 from actions.pyrosettacluster.utils import (
+    PYROSETTA_FIND_LINKS_PATH,
     ROSETTACOMMONS_CONDA_CHANNEL,
     detect_platform,
 )
@@ -63,8 +64,13 @@ def setup_pixi_environment(env_dir, timeout):
     print(f"Pixi environment setup complete in directory: '{env_path}'.")
 
 
-def setup_uv_environment(env_dir, timeout):
+def setup_uv_environment_pyrosetta_installer(env_dir, timeout):
     """
+    *Deprecated* This uv project setup function uses the 'pyrosetta-installer' package,
+    which does not support long-term reproducibility of PyRosetta package installations.
+    Please see the `setup_uv_environment` function, which instead implements the quarterly
+    PyRosetta package installations that are maintained for long-term reproducibility.
+
     Create a fresh uv environment using the 'pyrosetta-installer' package.
 
     Note: this requires that `uv` is an executable installed and on `${PATH}`. This function:
@@ -80,7 +86,7 @@ def setup_uv_environment(env_dir, timeout):
     print(f"Creating uv environment at '{env_path}'...")
     os.makedirs(env_dir, exist_ok=True)
     py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-    template_toml_file = Path(__file__).resolve().parent / "uv" / "pyproject.toml"
+    template_toml_file = Path(__file__).resolve().parent / "uv" / "pyproject_pyrosetta_installer.toml"
     with open(template_toml_file, "r") as f:
         toml_data = f.read().format(
             name=os.path.basename(env_dir),
@@ -91,8 +97,8 @@ def setup_uv_environment(env_dir, timeout):
         f.write(toml_data)
 
     # Install pyrosetta-installer
-    print("Adding 'pyrosetta-installer', 'pip', and `pyrosetta.distributed` depedencies to uv environment...")
-    requirements_txt_file = Path(__file__).resolve().parent / "uv" / "requirements.txt"
+    print("Adding 'pyrosetta-installer', 'pip', and `pyrosetta.distributed` dependencies to uv environment...")
+    requirements_txt_file = Path(__file__).resolve().parent / "uv" / "requirements_pyrosetta_installer.txt"
     subprocess.run(
         [
             "uv",
@@ -111,6 +117,51 @@ def setup_uv_environment(env_dir, timeout):
     subprocess.run(
         ["uv", "run", "--project", str(env_path), "python", install_pyrosetta_file],
         check=True,
+        timeout=timeout,
+    )
+
+    print(f"Uv environment setup complete in directory: '{env_path}'.")
+
+
+def setup_uv_environment(env_dir, timeout):
+    """
+    Create a fresh uv environment using the PyRosetta quarterly builds for long-term reproducibility.
+
+    Note: this requires that `uv` is an executable installed and on `${PATH}`. This function:
+    - detects the current Python version
+    - adds PyRosetta and `pyrosetta.distributed` dependencies via `uv add ...`
+    """
+    env_path = Path(env_dir)
+    if env_path.exists():
+        raise FileExistsError(f"The specified uv environment path already exists: '{env_path}'.")
+
+    # Create uv environment using the current Python
+    print(f"Creating uv environment at '{env_path}'...")
+    os.makedirs(env_dir, exist_ok=True)
+    py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    template_toml_file = Path(__file__).resolve().parent / "uv" / "pyproject.toml"
+    with open(template_toml_file, "r") as f:
+        toml_data = f.read().format(
+            name=os.path.basename(env_dir),
+            py_version=py_version,
+            pyrosetta_find_links_path=PYROSETTA_FIND_LINKS_PATH,
+        )
+    toml_file = env_path / "pyproject.toml"
+    with open(toml_file, "w") as f:
+        f.write(toml_data)
+
+    # Install pyrosetta-installer
+    print("Adding PyRosetta and `pyrosetta.distributed` dependencies to uv environment...")
+    requirements_txt_file = Path(__file__).resolve().parent / "uv" / "requirements.txt"
+    subprocess.run(
+        [
+            "uv",
+            "add",
+            "--project", str(env_path),
+            "--requirements", str(requirements_txt_file),
+        ],
+        check=True,
+        cwd=str(env_path),
         timeout=timeout,
     )
 
@@ -176,7 +227,11 @@ if __name__ == "__main__":
     if args.env_manager == "pixi":
         setup_pixi_environment(args.env_dir, args.timeout)
     elif args.env_manager == "uv":
-        setup_uv_environment(args.env_dir, args.timeout)
+        use_pyrosetta_installer = False
+        if use_pyrosetta_installer:
+            setup_uv_environment_pyrosetta_installer(args.env_dir, args.timeout)
+        else:
+            setup_uv_environment(args.env_dir, args.timeout)
     elif args.env_manager in ("conda", "mamba"):
         setup_conda_environment(args.env_dir, args.timeout, env_manager=args.env_manager)
     else:

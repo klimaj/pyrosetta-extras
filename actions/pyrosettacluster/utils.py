@@ -6,7 +6,13 @@ __author__ = "Jason C. Klima"
 import platform
 
 
-ROSETTACOMMONS_CONDA_CHANNEL = "https://conda.rosettacommons.org" # "https://conda.graylab.jhu.edu"
+WEST_MIRROR = False
+if WEST_MIRROR:
+    ROSETTACOMMONS_CONDA_CHANNEL = "https://conda.rosettacommons.org"
+    PYROSETTA_FIND_LINKS_PATH = "https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization"
+else:
+    ROSETTACOMMONS_CONDA_CHANNEL = "https://conda.graylab.jhu.edu"
+    PYROSETTA_FIND_LINKS_PATH = "https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization"
 
 
 def detect_platform():
