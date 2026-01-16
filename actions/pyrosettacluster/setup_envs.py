@@ -223,12 +223,20 @@ if __name__ == "__main__":
     parser.add_argument('--env_manager', type=str)
     parser.add_argument('--env_dir', type=str)
     parser.add_argument('--timeout', type=float)
+    parser.add_argument('--use_pyrosetta_installer', dest='use_pyrosetta_installer', action='store_true')
+    parser.set_defaults(use_pyrosetta_installer=False)
     args = parser.parse_args()
+    # Validate
+    if args.use_pyrosetta_installer and args.env_manager != "uv":
+        raise ValueError(
+            "If passing the '--use_pyrosetta_installer' flag, the '--env_manager' flag "
+            f"must be set to 'uv'. Received: '{args.env_manager}'"
+        )
+    # Run setup
     if args.env_manager == "pixi":
         setup_pixi_environment(args.env_dir, args.timeout)
     elif args.env_manager == "uv":
-        use_pyrosetta_installer = True
-        if use_pyrosetta_installer:
+        if args.use_pyrosetta_installer:
             setup_uv_environment_pyrosetta_installer(args.env_dir, args.timeout)
         else:
             setup_uv_environment(args.env_dir, args.timeout)
