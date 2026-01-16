@@ -6,8 +6,8 @@ __author__ = "Jason C. Klima"
 import platform
 
 
-WEST_MIRROR: bool = True
-if WEST_MIRROR:
+USE_WEST_MIRROR: bool = False
+if USE_WEST_MIRROR:
     ROSETTACOMMONS_CONDA_CHANNEL: str = "https://conda.rosettacommons.org"
     PYROSETTA_FIND_LINKS_PATH: str = "https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization"
 else:

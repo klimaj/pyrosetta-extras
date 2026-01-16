@@ -17,6 +17,7 @@ from pathlib import Path
 from actions.pyrosettacluster.utils import (
     PYROSETTA_FIND_LINKS_PATH,
     ROSETTACOMMONS_CONDA_CHANNEL,
+    USE_WEST_MIRROR,
     detect_platform,
 )
 
@@ -114,8 +115,9 @@ def setup_uv_environment_pyrosetta_installer(env_dir, timeout):
     # Run PyRosetta installer with mirror fallback
     print("Running PyRosetta installer in uv environment...")
     install_pyrosetta_file = Path(__file__).resolve().parent.parent.parent / "pyrosettacluster" / "install_pyrosetta.py"
+    mirror_order = "0 1" if USE_WEST_MIRROR else "1 0"
     subprocess.run(
-        ["uv", "run", "--project", str(env_path), "python", install_pyrosetta_file],
+        ["uv", "run", "--project", str(env_path), "python", install_pyrosetta_file, f"--mirror_order {mirror_order}"],
         check=True,
         timeout=timeout,
     )

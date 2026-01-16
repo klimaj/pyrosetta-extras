@@ -28,7 +28,7 @@ import subprocess
 import tempfile
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 
 def run_subprocess(
@@ -68,7 +68,7 @@ def requirement_present(req_file: str, name: str) -> bool:
     return bool(re.search(rf"^{re.escape(name)}==", contents, flags=re.MULTILINE))
 
 
-def recreate_environment(env_dir: str, env_manager: str, timeout: float):
+def recreate_environment(env_dir: str, env_manager: str, timeout: float, mirror_order: List[int]) -> None:
     """
     Recreate an environment using pixi, uv, conda, or mamba inside `env_dir`.
     The directory must already exist.
@@ -155,8 +155,9 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
         # uv environment recreation after the original uv environment creation.
         print("[INFO] Running PyRosetta installer in uv environment...")
         install_pyrosetta_file = Path(__file__).resolve().parent / "install_pyrosetta.py"
+        mirror_order_str = " ".join(map(str, mirror_order))
         run_subprocess(
-            f"uv run --project '{env_dir}' python '{install_pyrosetta_file}'",
+            f"uv run --project '{env_dir}' python '{install_pyrosetta_file}' --mirror_order {mirror_order_str}",
             cwd=env_dir,
             timeout=timeout,
         )
@@ -254,6 +255,17 @@ if __name__ == "__main__":
         ),
     )
 
+    parser.add_argument(
+        "--mirror_order",
+        nargs="+",
+        type=int,
+        default=[0, 1],
+        help=(
+            "Optionally specify the PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. "
+            "See the PyPI 'pyrosetta-installer' package website for details."
+        ),
+    )
+
     args = parser.parse_args()
 
     if args.env_manager is None:
@@ -262,6 +274,8 @@ if __name__ == "__main__":
             "the `--env_manager` flag, or otherwise set the "
             "environment variable 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER'."
         )
+    if len(args.mirror_order) != 2 or not all(x in (0, 1) for x in args.mirror_order):
+        raise ValueError("The `--mirror_order` flag value must be two integers, each being 0 or 1.")
 
     args.env_manager = validate_env_manager(args.env_manager)
 
@@ -269,4 +283,5 @@ if __name__ == "__main__":
         env_dir=args.env_dir,
         env_manager=args.env_manager,
         timeout=args.timeout,
+        mirror_order=args.mirror_order,
     )

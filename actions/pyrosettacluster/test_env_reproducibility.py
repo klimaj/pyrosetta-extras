@@ -18,6 +18,9 @@ import uuid
 from pathlib import Path
 
 
+from actions.pyrosettacluster.utils import USE_WEST_MIRROR
+
+
 class TestEnvironmentReproducibility(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -196,11 +199,13 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             f"Reproduced '{environment_manager}' environment directory was not created: '{reproduce_env_dir}'",
         )
         recreate_env_script = Path(__file__).resolve().parent.parent.parent / "pyrosettacluster" / "recreate_env.py"
+        mirror_order_str = "0 1" if USE_WEST_MIRROR else "1 0"
         cmd = (
             f"{sys.executable} -u {recreate_env_script} "
             f"--env_dir '{reproduce_env_dir}' "
             f"--env_manager '{environment_manager}' "
-            f"--timeout '{timeout}'"
+            f"--timeout '{timeout}' "
+            f"--mirror_order {mirror_order_str}"
         )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
