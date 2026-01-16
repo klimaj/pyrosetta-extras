@@ -227,7 +227,7 @@ if __name__ == "__main__":
     if args.env_manager == "pixi":
         setup_pixi_environment(args.env_dir, args.timeout)
     elif args.env_manager == "uv":
-        use_pyrosetta_installer = False
+        use_pyrosetta_installer = True
         if use_pyrosetta_installer:
             setup_uv_environment_pyrosetta_installer(args.env_dir, args.timeout)
         else:
