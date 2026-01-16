@@ -93,7 +93,7 @@ jobs:
   # ============================================================
   # UV JOB (WEEKLY RELEASES)
   # ============================================================
-  uv:
+  uv_pyrosetta_installer:
     name: Uv (pyrosetta-installer)
     runs-on: ubuntu-latest
     strategy:
