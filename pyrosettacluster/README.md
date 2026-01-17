@@ -39,9 +39,39 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 > _Explanation:_ If using the `uv` environment manager, it is highly recommended to avoid using the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package to install the required `pyrosetta.distributed` framework packages (which installs subpackages using `pip install ...`, so the subpackages will _not_ get registered as installed in the exported `uv` environment file). Instead, please install the required `pyrosetta.distributed` framework packages individually to register them properly in the uv environment.
 
 > [!IMPORTANT]
-> It is recommended to use either the `pixi`, `conda` or `mamba` environment manager.
+> It is recommended to install PyRosetta via the *quarterly builds* (instead of the PyPI `pyrosetta-installer` package) when using the `uv` environment manager.
+>
+> _Explanation:_ If using the `uv` environment manager, the PyRosetta quarterly builds enable long-term reproducibility of Python virtual environments containing the `pyrosetta` package, and may be installed via the `uv add pyrosetta` or `uv pip install pyrosetta` syntax; please be sure to include the `--find-links` (or `-f`) flag to indicate the links search path to the PyRosetta `cxx11thread.serialization` builds:
 > 
-> _Explanation:_ If using the `uv` environment manager, currently the only way to install PyRosetta is using the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package, which installs the `pyrosetta` package using `pip install ...` (instead of `uv pip install ...`), so `pyrosetta` will _not_ get registered as installed in the exported environment file. Furthermore, when recreating a `uv` environment (see [below](#recreating-environments-for-pyrosettacluster)) using the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package, the syntax does not allow specifying an exact PyRosetta version (automatically defaulting to the latest published PyRosetta version), and therefore installing the correct PyRosetta version in the recreated `uv` environment depends fortuitously on a prompt `uv` environment recreation after the original `uv` environment creation (typically [within the same week or so](https://west.rosettacommons.org/pyrosetta/release/release/). For this reason, `pixi`, `conda` and `mamba` are highly preferred environment managers instead of `uv` for reproducible environments used for reproducible PyRosettaCluster simulations. Note that the PyRosetta developers are working on supporting a bona fide `uv pip install pyrosetta==X.Y` syntax in the future — stay tuned!
+> For west mirror: [https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization](https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization)
+> 
+> For east mirror: [https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization](https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization)
+> 
+> For example:
+>```
+>uv pip install pyrosetta -f https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
+>```
+>
+> And to specify a specific version, for example:
+>```
+>uv add pyrosetta==2026.3+releasequarterly.5e498f1409 -f https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
+>```
+> 
+> Alternatively, simply add the following to your `uv` project's `pyproject.toml` file:
+> ```
+> [tool.uv]
+> find-links = ['https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization']
+> ```
+>Then, simply run `uv add pyrosetta` or `uv pip install pyrosetta` to get the most recent `pyrosetta` package quarterly release.
+> 
+> Alternatively, add the following to your system's `uv.toml` [configuration file](https://docs.astral.sh/uv/concepts/configuration-files) (note this only works with `uv pip install pyrosetta` syntax, and not `uv add pyrosetta` syntax):
+> ```
+>[pip]
+> find-links = ['https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization']
+> ```
+> Then, simply run `uv pip install pyrosetta` to get the most recent `pyrosetta` package quarterly release.
+> 
+> Installing PyRosetta via the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package into a `uv` project is *not* recommended because it installs the `pyrosetta` package using `pip install ...` (instead of `uv pip install ...`), so `pyrosetta` will _not_ get registered as installed in the exported environment file. Furthermore, when recreating a `uv` environment (see [below](#recreating-environments-for-pyrosettacluster)) using the [PyPI pyrosetta-installer](https://pypi.org/project/pyrosetta-installer/) package, the syntax does not allow specifying an exact PyRosetta version (automatically defaulting to the latest published PyRosetta version), and therefore installing the correct PyRosetta version in the recreated `uv` environment depends fortuitously on a prompt `uv` environment recreation after the original `uv` environment creation (typically [within the same week or so](https://west.rosettacommons.org/pyrosetta/release/release/)). For this reason, `pixi`, `conda` and `mamba` are the preferred environment managers when requiring the latest weekly PyRosetta builds, and if using `uv` then the PyRosetta quarterly builds are highly recommended for creating long-term reproducible virtual environments used for reproducible PyRosettaCluster simulations.
 
 <a name="running-pyrosettacluster-simulations"></a>
 # 💨 Running PyRosettaCluster Simulations
@@ -190,6 +220,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
