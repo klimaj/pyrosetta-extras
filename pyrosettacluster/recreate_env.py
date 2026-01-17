@@ -274,8 +274,10 @@ if __name__ == "__main__":
             "the `--env_manager` flag, or otherwise set the "
             "environment variable 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER'."
         )
-    if len(args.mirror_order) != 2 or not all(x in (0, 1) for x in args.mirror_order):
-        raise ValueError("The `--mirror_order` flag value must be two integers, each being 0 or 1.")
+    if args.mirror_order not in ([0, 1], [1, 0]):
+        raise ValueError(
+            f"The `--mirror_order` flag value must be either [0, 1] or [1, 0]. Received: {args.mirror_order}"
+        )
 
     args.env_manager = validate_env_manager(args.env_manager)
 
