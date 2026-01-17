@@ -1,4 +1,8 @@
-# 🧬☁️ PyRosettaCluster
+<div align="center">
+  <img src="images/title.png" width="75%" />
+  <br><br>
+</div>
+
 PyRosettaCluster is a Python framework for reproducible, high-throughput job distribution of user-defined PyRosetta protocols efficiently parallelized on the user's local computer, high-performance computing (HPC) cluster, or elastic cloud computing infrastructure with available compute resources.
 
 ## Table of Contents
@@ -220,6 +224,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
