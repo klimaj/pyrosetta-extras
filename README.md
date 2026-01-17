@@ -15,5 +15,5 @@
 
 ---
 
-## ✏️ Contributions: 
+## ✏️ Contributions
 Please use Rosetta's [Fork-and-PR model](https://github.com/RosettaCommons/rosetta?tab=contributing-ov-file#starting-rosetta-developement) for development. See https://www.rosettacommons.org/docs/latest/internal_documentation/GithubWorkflow for more information about the recommended workflow.
