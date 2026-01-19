@@ -8,7 +8,9 @@
 
 ## 🗂️ Features
 <div align="left">
-  <img src="pyrosettacluster/images/title.png" width="67%" />
+  <a href="pyrosettacluster/">
+    <img src="pyrosettacluster/images/title.png" width="67%" />
+  </a>
 </div>
 
 - Visit the [PyRosettaCluster extra documentation](pyrosettacluster) for more info.
