@@ -1,4 +1,4 @@
-name: PyRosetta quarterly install test
+name: pyrosetta_installer tests
 
 on:
   # push:
