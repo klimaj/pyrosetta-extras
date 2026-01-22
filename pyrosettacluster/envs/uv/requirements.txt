@@ -1,3 +1,6 @@
+# Requires Python >=3.9
+--find-links https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
+--find-links https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization
 attrs>=19.3.0
 billiard>=3.6.3.0
 blosc>=1.8.3

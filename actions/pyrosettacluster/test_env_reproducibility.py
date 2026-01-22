@@ -18,6 +18,9 @@ import uuid
 from pathlib import Path
 
 
+from actions.pyrosettacluster.utils import USE_WEST_MIRROR
+
+
 class TestEnvironmentReproducibility(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -75,11 +78,15 @@ class TestEnvironmentReproducibility(unittest.TestCase):
     def recreate_environment_test(
         self,
         environment_manager="conda",
+        use_pyrosetta_installer=False,
         timeout=(3 * 60 * 60), # 3 hours per subprocess
         verbose=False,
     ):
         """Test for PyRosettaCluster decoy reproducibility in a recreated virtual environment."""
         self.assertIn(environment_manager, ("conda", "mamba", "uv", "pixi"))
+        self.assertIsInstance(use_pyrosetta_installer, bool)
+        if use_pyrosetta_installer:
+            self.assertEqual(environment_manager, "uv")
 
         test_script = os.path.join(os.path.dirname(__file__), "recreate_environment_test_runs.py")
 
@@ -94,6 +101,8 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             f"--env_dir '{original_env_dir}' "
             f"--timeout '{timeout}'"
         )
+        if use_pyrosetta_installer:
+            cmd += " --use_pyrosetta_installer"
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
             module_dir=os.path.dirname(setup_env_script),
@@ -190,11 +199,13 @@ class TestEnvironmentReproducibility(unittest.TestCase):
             f"Reproduced '{environment_manager}' environment directory was not created: '{reproduce_env_dir}'",
         )
         recreate_env_script = Path(__file__).resolve().parent.parent.parent / "pyrosettacluster" / "recreate_env.py"
+        mirror_order_str = "0 1" if USE_WEST_MIRROR else "1 0"
         cmd = (
             f"{sys.executable} -u {recreate_env_script} "
             f"--env_dir '{reproduce_env_dir}' "
             f"--env_manager '{environment_manager}' "
-            f"--timeout '{timeout}'"
+            f"--timeout '{timeout}' "
+            f"--mirror_order {mirror_order_str}"
         )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
@@ -328,6 +339,10 @@ class TestEnvironmentReproducibility(unittest.TestCase):
     @unittest.skipIf(shutil.which("uv") is None, "The executable 'uv' is not available.")
     def test_recreate_environment_uv(self):
         return self.recreate_environment_test(environment_manager="uv")
+
+    @unittest.skipIf(shutil.which("uv") is None, "The executable 'uv' is not available.")
+    def test_recreate_environment_uv_pyrosetta_installer(self):
+        return self.recreate_environment_test(environment_manager="uv", use_pyrosetta_installer=True)
 
     @unittest.skipIf(shutil.which("pixi") is None, "The executable 'pixi' is not available.")
     def test_recreate_environment_pixi(self):

@@ -56,10 +56,10 @@ jobs:
 
 
   # ============================================================
-  # UV JOB
+  # UV JOB (QUARTERLY RELEASES)
   # ============================================================
   uv:
-    name: Uv
+    name: Uv (quarterly)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -88,6 +88,41 @@ jobs:
           which python
           python --version
           python -u -m unittest actions.pyrosettacluster.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_uv -v
+
+
+  # ============================================================
+  # UV JOB (WEEKLY RELEASES)
+  # ============================================================
+  uv_pyrosetta_installer:
+    name: Uv (pyrosetta-installer)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          uv --version
+
+      - name: Add repo root to PYTHONPATH
+        run: echo "PYTHONPATH=$PYTHONPATH:${{ github.workspace }}" >> $GITHUB_ENV
+
+      - name: Run tests (uv)
+        shell: bash
+        run: |
+          which python
+          python --version
+          python -u -m unittest actions.pyrosettacluster.test_env_reproducibility.TestEnvironmentReproducibility.test_recreate_environment_uv_pyrosetta_installer -v
 
 
   # ============================================================

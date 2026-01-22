@@ -22,12 +22,13 @@ __author__ = "Jason C. Klima"
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import tempfile
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 
 def run_subprocess(
@@ -60,7 +61,14 @@ def run_subprocess(
         raise RuntimeError(cmd) from ex
 
 
-def recreate_environment(env_dir: str, env_manager: str, timeout: float):
+def requirement_present(req_file: str, name: str) -> bool:
+    """Test if a package name is specified in an input 'requirements.txt' file."""
+    with open(req_file, "r") as f:
+        contents = f.read()
+    return bool(re.search(rf"^{re.escape(name)}==", contents, flags=re.MULTILINE))
+
+
+def recreate_environment(env_dir: str, env_manager: str, timeout: float, mirror_order: List[int]) -> None:
     """
     Recreate an environment using pixi, uv, conda, or mamba inside `env_dir`.
     The directory must already exist.
@@ -94,6 +102,8 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
             )
         # Install packages strictly from requirements.txt
         env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}'"
+        # Test if the 'pyrosetta-installer' package is specified
+        use_pyrosetta_installer = requirement_present(req_file, "pyrosetta-installer")
 
     elif env_manager == "conda":
         yml_file = os.path.join(env_dir, "environment.yml")
@@ -139,14 +149,15 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float):
     if env_manager != "mamba":
         run_subprocess(env_create_cmd, cwd=env_dir, timeout=timeout)
     
-    if env_manager == "uv":
+    if env_manager == "uv" and use_pyrosetta_installer:
         # The recreated uv environment uses the PyPI 'pyrosetta-installer' package, which does not allow specifying PyRosetta version.
         # Therefore, installing the correct PyRosetta version in the recreated uv environment depends fortuitously on a prompt
         # uv environment recreation after the original uv environment creation.
         print("[INFO] Running PyRosetta installer in uv environment...")
         install_pyrosetta_file = Path(__file__).resolve().parent / "install_pyrosetta.py"
+        mirror_order_str = " ".join(map(str, mirror_order))
         run_subprocess(
-            f"uv run --project '{env_dir}' python '{install_pyrosetta_file}'",
+            f"uv run --project '{env_dir}' python '{install_pyrosetta_file}' --mirror_order {mirror_order_str}",
             cwd=env_dir,
             timeout=timeout,
         )
@@ -244,6 +255,17 @@ if __name__ == "__main__":
         ),
     )
 
+    parser.add_argument(
+        "--mirror_order",
+        nargs="+",
+        type=int,
+        default=[0, 1],
+        help=(
+            "Optionally specify the PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. "
+            "See the PyPI 'pyrosetta-installer' package website for details."
+        ),
+    )
+
     args = parser.parse_args()
 
     if args.env_manager is None:
@@ -252,6 +274,10 @@ if __name__ == "__main__":
             "the `--env_manager` flag, or otherwise set the "
             "environment variable 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER'."
         )
+    if args.mirror_order not in ([0, 1], [1, 0]):
+        raise ValueError(
+            f"The `--mirror_order` flag value must be either [0, 1] or [1, 0]. Received: {args.mirror_order}"
+        )
 
     args.env_manager = validate_env_manager(args.env_manager)
 
@@ -259,4 +285,5 @@ if __name__ == "__main__":
         env_dir=args.env_dir,
         env_manager=args.env_manager,
         timeout=args.timeout,
+        mirror_order=args.mirror_order,
     )
