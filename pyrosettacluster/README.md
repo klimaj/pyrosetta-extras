@@ -34,20 +34,20 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 >
 > _Explanation:_ If using the `uv` environment manager, the PyRosetta quarterly builds enable long-term reproducibility of virtual environments containing the `pyrosetta` package; just include the `--find-links` (or `-f`) flag to indicate the links search path to the PyRosetta `cxx11thread.serialization` wheels:
 > 
->  - For *west* mirror: [https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization](https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization)
+>  - For *west* mirror: [https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/](https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/)
 > 
->  - For *east* mirror: [https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization](https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization)
+>  - For *east* mirror: [https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization/](https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization/)
 > 
 > *Example #1*:
 >```
->uv pip install pyrosetta -f https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
+>uv pip install pyrosetta -f https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/
 >```
 >
 > *Example #2*:
 > 
 > To specify a specific version:
 >```
->uv add pyrosetta==2026.3+releasequarterly.5e498f1409 -f https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
+>uv add pyrosetta==2026.3+releasequarterly.5e498f1409 -f https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/
 >```
 >
 > *Example #3*:
@@ -55,7 +55,7 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 > Alternatively, add the following to your `uv` project's `pyproject.toml` file:
 > ```
 > [tool.uv]
-> find-links = ["https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization"]
+> find-links = ["https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/"]
 > ```
 >Then run `uv add pyrosetta` or `uv pip install pyrosetta` to get the most recent `pyrosetta` package quarterly release.
 >
@@ -64,7 +64,7 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 > Alternatively, add the following to your system's `uv.toml` [configuration file](https://docs.astral.sh/uv/concepts/configuration-files) (however, this only works with `uv pip install pyrosetta` syntax, and not `uv add pyrosetta` syntax):
 > ```
 >[pip]
-> find-links = ["https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization"]
+> find-links = ["https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/"]
 > ```
 > Then run `uv pip install pyrosetta` to get the most recent `pyrosetta` package quarterly release.
 > 
@@ -217,4 +217,5 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
