@@ -1,0 +1,87 @@
+name: PyRosetta quarterly install test
+
+on:
+  # push:
+  # pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    name: ${{ matrix.os.os_name }} / py${{ matrix.python }} / ${{ matrix.flavor.name }} / ${{ matrix.mirror.name }}
+    runs-on: ${{ matrix.os.runs_on }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+        os:
+          - os_name: linux
+            runs_on: ubuntu-latest
+          - os_name: mac-x86
+            runs_on: macos-15-intel
+          - os_name: mac-arm
+            runs_on: macos-15
+
+        # Quarterly “flavors”
+        flavor:
+          - name: release
+            type: Release
+            distributed: 0
+          - name: minsizerel
+            type: MinSizeRel
+            distributed: 0
+          - name: release.cxx11thread.serialization
+            type: Release
+            distributed: 1
+            
+
+        # Mirrors
+        mirror:
+          - name: west
+            mirror: 0
+          - name: east
+            mirror: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      - name: Upgrade pip tooling
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+#      - name: Install PyRosetta using pyrosetta_installer
+#        run: |
+#          pip install --no-cache-dir pyrosetta_installer
+#          python -c 'import pyrosetta_installer; pyrosetta_installer.install_pyrosetta(mirror=${{ matrix.mirror.mirror }}, distributed=${{ matrix.flavor.distributed }}, type="${{ matrix.flavor.type }}")'
+
+      - name: Install pyrosetta_installer
+        run: |
+          pip install --no-cache-dir pyrosetta_installer
+
+      - name: Install PyRosetta
+        env:
+          MIRROR: ${{ matrix.mirror.mirror }}
+          DISTRIBUTED: ${{ matrix.flavor.distributed }}
+          BUILD_TYPE: ${{ matrix.flavor.type }}
+        run: |
+          python - <<'PY'
+          import os
+          import pyrosetta_installer
+
+          pyrosetta_installer.install_pyrosetta(
+              mirror=int(os.environ["MIRROR"]),
+              distributed=int(os.environ["DISTRIBUTED"]),
+              type=os.environ["BUILD_TYPE"],
+          )
+          PY
+
+      - name: Sanity check import + init
+        run: |
+          python -c "import pyrosetta; pyrosetta.init(); print(pyrosetta._build_signature()); print('init ok')"
