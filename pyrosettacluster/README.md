@@ -101,6 +101,9 @@ Please see the [official PyRosettaCluster documentation](https://graylab.jhu.edu
 >
 > In general, the determinism can be (and ought to be) strictly controlled when developing PyRosetta protocols. Note that PyRosettaCluster can still be used as a job distributor, even if PyRosetta protocol determinism is impossible for a specific application.
 
+> [!IMPORTANT]
+> If using the `uv` environment manager, please remember to set the `UV_PROJECT` environment variable to the `uv` project root directory, or run the `PyRosettaCluster` simulation from the `uv` project root directory, in order for `PyRosettaCluster` to automatically detect and cache the `uv` project's `pyproject.toml` file for environment reproducibility.
+
 <a name="recreating-environments-for-pyrosettacluster"></a>
 # 🏘️ *Re*creating Environments for PyRosettaCluster
 
@@ -217,5 +220,6 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
