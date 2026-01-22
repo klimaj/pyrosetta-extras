@@ -26,6 +26,6 @@ dependencies = [
 
 [tool.uv]
 find-links = [
-    "https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization",
-    "https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization",
+    "https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization/",
+    "https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization/",
 ]
