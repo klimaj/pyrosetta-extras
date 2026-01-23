@@ -261,8 +261,10 @@ if __name__ == "__main__":
         type=int,
         default=[0, 1],
         help=(
-            "Optionally specify the PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. "
-            "See the PyPI 'pyrosetta-installer' package website for details."
+            "Optionally, if using the `uv` environment manager and the `pyrosetta-installer` package "
+            "is specified as a dependency in the `requirements.txt` file, then this option sets the "
+            "PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. If not using `uv`, "
+            "this option is ignored. See the PyPI 'pyrosetta-installer' package website for details."
         ),
     )
 
