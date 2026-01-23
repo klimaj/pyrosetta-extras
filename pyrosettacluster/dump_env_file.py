@@ -204,7 +204,7 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------
     parser.add_argument(
         "--env_dir",
-        type=ensure_env_dir,
+        type=str,
         required=False,
         default=None,
         help=(
@@ -247,6 +247,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    args.env_dir = ensure_env_dir(args.env_dir)
 
     main(
         input_file=args.input_file,
