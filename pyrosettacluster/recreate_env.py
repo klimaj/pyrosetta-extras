@@ -217,7 +217,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=(
             "Recreate a PyRosettaCluster environment using one of the supported "
-            "environment managers ('pixi', 'uv', 'conda', 'mamba')."
+            "environment managers ('pixi', 'uv', 'conda', 'mamba').\n"
+            __doc__
         )
     )
 
