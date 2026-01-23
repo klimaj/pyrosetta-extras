@@ -68,7 +68,10 @@ def main(
     env_manager = metadata_kwargs.get("environment_manager")  # may be `None` in legacy cases
 
     sha1 = instance_kwargs.get("sha1")
+    print("[INFO] " + "-" * 53)
+    print("[INFO] Please note the GitHub SHA1 from which the original simulation was run:")
     print(f"[INFO] GitHub SHA1: {sha1}")
+    print("[INFO] " + "-" * 53)
 
     # Determine output files based on manager
     if env_manager == "pixi":
