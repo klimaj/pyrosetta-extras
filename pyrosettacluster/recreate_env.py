@@ -14,7 +14,7 @@ recreate the environment that was used to generate the decoy with a new environm
 The environment manager used (i.e., either 'conda', 'mamba', 'uv', or 'pixi') is
 automatically determined from the operating system environment variable
 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER' if exported, or otherwise it must be
-provided using the `--env_manager` flag. Run `./recreate_env.py --help` for more details.
+provided using the `--env_manager` flag.
 """
 
 __author__ = "Jason C. Klima"
