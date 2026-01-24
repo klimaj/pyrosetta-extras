@@ -24,9 +24,68 @@ class TestAtomCoordinates(unittest.TestCase):
                     )
 
     def assert_rmsd(self, pose1, pose2):
-        # rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_incl_hydrogens(pose1, pose2)
+        self.assertEqual(pose1.size(), pose2.size())
+        rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_incl_hydrogens(pose1, pose2)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
         rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd(pose1, pose2)
-        self.assertEqual(rmsd, 0.0)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
+        rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_nosuper(pose1, pose2)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
+        rmsd = pyrosetta.rosetta.core.scoring.all_scatom_rmsd_nosuper(pose1, pose2)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
+        rmsd = pyrosetta.rosetta.core.scoring.bb_rmsd(pose1, pose2)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
+        rmsd = pyrosetta.rosetta.core.scoring.bb_rmsd_including_O(pose1, pose2)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
+        rmsd = pyrosetta.rosetta.core.scoring.CA_rmsd(pose1, pose2)
+        print(rmsd)
+        self.assertAlmostEqual(
+            rmsd,
+            0.0,
+            places=6,
+        )
+        for res in range(1, pose1.size() + 1):
+            v1 = pyrosetta.rosetta.utility.vector1_unsigned_long()
+            v1.append(res)
+            rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_nosuper(
+                pose1=pose1,
+                pose2=pose2,
+                pose1_residues=v1,
+                pose2_residues=v1,
+            )
+            print(f"Residue {res}:", rmsd)
+            self.assertAlmostEqual(rmsd, 0.0, places=6)
+            # self.assertEqual(rmsd, 0.0)
 
     def assert_energy(self, pose1, pose2):
         scorefxn = io.create_score_function()
