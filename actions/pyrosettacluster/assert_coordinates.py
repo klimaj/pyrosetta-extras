@@ -71,7 +71,7 @@ class TestAtomCoordinates(unittest.TestCase):
             delta=1e-6,
         )
 
-    def assert_energy(self, pose1, pose2):
+    def assert_total_score(self, pose1, pose2):
         scorefxn = pyrosetta.get_score_function()
         self.assertEqual(scorefxn(pose1), scorefxn(pose2))
 
@@ -80,7 +80,7 @@ class TestAtomCoordinates(unittest.TestCase):
         reproduce_pose = io.pose_from_file(self.reproduce_output_file).pose
         self.assert_atom_coordinates(original_pose, reproduce_pose)
         self.assert_rmsd(original_pose, reproduce_pose)
-        self.assert_energy(original_pose, reproduce_pose)
+        self.assert_total_score(original_pose, reproduce_pose)
 
 
 if __name__ == "__main__":
