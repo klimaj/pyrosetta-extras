@@ -69,7 +69,7 @@ def main(
 
     sha1 = instance_kwargs.get("sha1")
     print("[INFO] " + "-" * 72)
-    print("[INFO] Please note the GitHub SHA1 from which the original simulation was run:")
+    print("[INFO] Please note the GitHub SHA1 from which the original simulation was run!")
     print(f"[INFO] GitHub SHA1: {sha1}")
     print("[INFO] " + "-" * 72)
 
