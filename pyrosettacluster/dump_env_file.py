@@ -1,7 +1,7 @@
 """
-Extract and write a PyRosettaCluster environment file based on
-metadata from a PyRosettaCluster result. This script requires PyRosetta version >=2025.47
-to be installed for the PyRosettaCluster environment file extraction.
+Extract and write a PyRosettaCluster environment file based on metadata from a PyRosettaCluster
+output decoy file or PyRosettaCluster output scorefile. This script requires PyRosetta version
+`>=2025.47` and `pyrosetta.distributed` framework dependencies to be installed.
 """
 
 __author__ = "Jason C. Klima"
@@ -155,12 +155,7 @@ def ensure_env_dir(path: Optional[str]) -> str:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=(
-            "Dump a PyRosettaCluster environment file using metadata contained in a "
-            "PyRosettaCluster output decoy file or PyRosettaCluster output scorefile."
-        )
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
 
     # -------------------------------------------------------------------------
     # Inputs for `pyrosetta.distributed.cluster.get_instance_kwargs`
