@@ -45,45 +45,34 @@ class TestAtomCoordinates(unittest.TestCase):
             )
             self.assertEqual(rmsd, 0.0)
         # Test RMSDs with superimposing
-        rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_incl_hydrogens(pose1, pose2)
-        print(rmsd)
         self.assertAlmostEqual(
-            rmsd,
+            pyrosetta.rosetta.core.scoring.all_atom_rmsd_incl_hydrogens(pose1, pose2),
             0.0,
             delta=1e-6,
         )
-        rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd(pose1, pose2)
-        print(rmsd)
         self.assertAlmostEqual(
-            rmsd,
+            pyrosetta.rosetta.core.scoring.all_atom_rmsd(pose1, pose2),
             0.0,
             delta=1e-6,
         )
-
-        rmsd = pyrosetta.rosetta.core.scoring.bb_rmsd(pose1, pose2)
-        print(rmsd)
         self.assertAlmostEqual(
-            rmsd,
+            pyrosetta.rosetta.core.scoring.bb_rmsd(pose1, pose2),
             0.0,
             delta=1e-6,
         )
-        rmsd = pyrosetta.rosetta.core.scoring.bb_rmsd_including_O(pose1, pose2)
-        print(rmsd)
         self.assertAlmostEqual(
-            rmsd,
+            pyrosetta.rosetta.core.scoring.bb_rmsd_including_O(pose1, pose2),
             0.0,
             delta=1e-6,
         )
-        rmsd = pyrosetta.rosetta.core.scoring.CA_rmsd(pose1, pose2)
-        print(rmsd)
         self.assertAlmostEqual(
-            rmsd,
+            pyrosetta.rosetta.core.scoring.CA_rmsd(pose1, pose2),
             0.0,
             delta=1e-6,
         )
 
     def assert_energy(self, pose1, pose2):
-        scorefxn = io.create_score_function()
+        scorefxn = pyrosetta.get_score_function()
         self.assertEqual(scorefxn(pose1), scorefxn(pose2))
 
     def test_coordinates(self):
