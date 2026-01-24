@@ -14,7 +14,7 @@ recreate the environment that was used to generate the decoy with a new environm
 The environment manager used (i.e., either 'conda', 'mamba', 'uv', or 'pixi') is
 automatically determined from the operating system environment variable
 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER' if exported, or otherwise it must be
-provided using the `--env_manager` flag. Run `./recreate_env.py --help` for more details.
+provided using the `--env_manager` flag.
 """
 
 __author__ = "Jason C. Klima"
@@ -217,7 +217,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=(
             "Recreate a PyRosettaCluster environment using one of the supported "
-            "environment managers ('pixi', 'uv', 'conda', 'mamba')."
+            f"environment managers ('pixi', 'uv', 'conda', 'mamba').\n{__doc__}"
         )
     )
 
@@ -261,8 +261,10 @@ if __name__ == "__main__":
         type=int,
         default=[0, 1],
         help=(
-            "Optionally specify the PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. "
-            "See the PyPI 'pyrosetta-installer' package website for details."
+            "Optionally, if using the `uv` environment manager and the `pyrosetta-installer` package "
+            "is specified as a dependency in the `requirements.txt` file, then this option sets the "
+            "PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. If not using `uv`, "
+            "this option is ignored. See the PyPI 'pyrosetta-installer' package website for details."
         ),
     )
 

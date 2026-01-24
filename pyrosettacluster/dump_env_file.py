@@ -1,7 +1,7 @@
 """
-Extract and write a PyRosettaCluster environment file based on
-metadata from a PyRosettaCluster result. This script requires PyRosetta version >=2025.47
-to be installed for the PyRosettaCluster environment file extraction.
+Extract and write a PyRosettaCluster environment file based on metadata from a PyRosettaCluster
+output decoy file or PyRosettaCluster output scorefile. This script requires PyRosetta version
+`>=2025.47` and `pyrosetta.distributed` framework dependencies to be installed.
 """
 
 __author__ = "Jason C. Klima"
@@ -68,7 +68,10 @@ def main(
     env_manager = metadata_kwargs.get("environment_manager")  # may be `None` in legacy cases
 
     sha1 = instance_kwargs.get("sha1")
+    print("[INFO] " + "-" * 72)
+    print("[INFO] Please note the GitHub SHA1 from which the original simulation was run!")
     print(f"[INFO] GitHub SHA1: {sha1}")
+    print("[INFO] " + "-" * 72)
 
     # Determine output files based on manager
     if env_manager == "pixi":
@@ -152,12 +155,7 @@ def ensure_env_dir(path: Optional[str]) -> str:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=(
-            "Dump a PyRosettaCluster environment file using metadata contained in a "
-            "PyRosettaCluster output decoy file or PyRosettaCluster output scorefile."
-        )
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
 
     # -------------------------------------------------------------------------
     # Inputs for `pyrosetta.distributed.cluster.get_instance_kwargs`
@@ -204,7 +202,7 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------
     parser.add_argument(
         "--env_dir",
-        type=ensure_env_dir,
+        type=str,
         required=False,
         default=None,
         help=(
@@ -247,6 +245,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    args.env_dir = ensure_env_dir(args.env_dir)
 
     main(
         input_file=args.input_file,
