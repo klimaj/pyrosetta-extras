@@ -24,7 +24,8 @@ class TestAtomCoordinates(unittest.TestCase):
                     )
 
     def assert_rmsd(self, pose1, pose2):
-        rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_incl_hydrogens(pose1, pose2)
+        # rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd_incl_hydrogens(pose1, pose2)
+        rmsd = pyrosetta.rosetta.core.scoring.all_atom_rmsd(pose1, pose2)
         self.assertEqual(rmsd, 0.0)
 
     def assert_energy(self, pose1, pose2):
