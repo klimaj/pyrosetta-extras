@@ -31,9 +31,11 @@ def main(
     if (
         isinstance(input_file, str)
         and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
-        and pyrosetta_init_flags
     ):
-        pyrosetta.distributed.init(pyrosetta_init_flags)
+        if pyrosetta_init_flags:
+            pyrosetta.distributed.init(pyrosetta_init_flags)
+        else:
+            pyrosetta.distributed.init()
 
     if (
         isinstance(scorefile, str)
