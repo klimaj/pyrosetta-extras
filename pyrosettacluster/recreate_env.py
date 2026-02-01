@@ -111,7 +111,7 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float, mirror_
             req_file = os.path.join(env_dir, "requirements.txt")
             if os.path.isfile(req_file):
                 # Install packages strictly from requirements.txt
-                env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}'"
+                env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}' && uv lock"
                 # Test if the 'pyrosetta-installer' package is specified
                 use_pyrosetta_installer = requirement_present(req_file, "pyrosetta-installer")
             else:
