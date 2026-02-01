@@ -61,6 +61,13 @@ def run_subprocess(
         raise RuntimeError(cmd) from ex
 
 
+def uv_lock_package_present(lock_file: str, name: str) -> bool:
+    """Test if a package name is specified in an input 'uv.lock' file."""
+    with open(lock_file, "r") as f:
+        contents = f.read()
+    return bool(re.search(rf'^\[\[package\]\]\s*\n\s*name\s*=\s*"{name}"\s*$', contents, flags=re.MULTILINE))
+
+
 def requirement_present(req_file: str, name: str) -> bool:
     """Test if a package name is specified in an input 'requirements.txt' file."""
     with open(req_file, "r") as f:
@@ -94,16 +101,24 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float, mirror_
         env_create_cmd = "pixi install --frozen"
 
     elif env_manager == "uv":
-        req_file = os.path.join(env_dir, "requirements.txt")
-        if not os.path.isfile(req_file):
-            raise FileNotFoundError(
-                "Please ensure that the uv project 'requirements.txt' file "
-                "is in the uv project directory, then try again."
-            )
-        # Install packages strictly from requirements.txt
-        env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}'"
-        # Test if the 'pyrosetta-installer' package is specified
-        use_pyrosetta_installer = requirement_present(req_file, "pyrosetta-installer")
+        lock_file = os.path.join(env_dir, "uv.lock")
+        if os.path.isfile(lock_file):
+            # Install packages strictly from uv.lock
+            env_create_cmd = f"uv sync --frozen --project '{env_dir}'"
+            # Test if the 'pyrosetta-installer' package is specified
+            use_pyrosetta_installer = uv_lock_package_present(lock_file, "pyrosetta-installer")
+        else:
+            req_file = os.path.join(env_dir, "requirements.txt")
+            if os.path.isfile(req_file):
+                # Install packages strictly from requirements.txt
+                env_create_cmd = f"uv venv --project '{env_dir}' && uv pip sync --project '{env_dir}' '{req_file}'"
+                # Test if the 'pyrosetta-installer' package is specified
+                use_pyrosetta_installer = requirement_present(req_file, "pyrosetta-installer")
+            else:
+                raise FileNotFoundError(
+                    "Please ensure that the uv project 'uv.lock' (or 'requirements.txt' file) "
+                    "is in the uv project directory, then try again."
+                )
 
     elif env_manager == "conda":
         yml_file = os.path.join(env_dir, "environment.yml")
