@@ -300,23 +300,27 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         reproduce_output_file = reproduce_record["metadata"]["output_file"]
         assert_coordinates_script = os.path.join(os.path.dirname(__file__), "assert_coordinates.py")
         module = os.path.splitext(os.path.basename(assert_coordinates_script))[0]
+        pyrosetta_init_flags = "-run:constant_seed 1 -out:level 300"
         if environment_manager == "pixi":
             cmd = (
                 f"pixi run python -u -m {module} "
                 f"--original_output_file '{original_output_file}' "
                 f"--reproduce_output_file '{reproduce_output_file}' "
+                f"--pyrosetta_init_flags '{pyrosetta_init_flags}'"
             )
         elif environment_manager == "uv":
             cmd = (
                 f"uv run --locked --project {reproduce_env_dir} python -u -m {module} "
                 f"--original_output_file '{original_output_file}' "
                 f"--reproduce_output_file '{reproduce_output_file}' "
+                f"--pyrosetta_init_flags '{pyrosetta_init_flags}'"
             )
         elif environment_manager in ("conda", "mamba"):
             cmd = (
                 f"conda run -p {reproduce_env_dir} python -u -m {module} "
                 f"--original_output_file '{original_output_file}' "
                 f"--reproduce_output_file '{reproduce_output_file}' "
+                f"--pyrosetta_init_flags '{pyrosetta_init_flags}'"
             )
         returncode = TestEnvironmentReproducibility.run_subprocess(
             cmd,
