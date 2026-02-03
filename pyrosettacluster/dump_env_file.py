@@ -17,6 +17,22 @@ from pyrosetta.distributed.cluster import get_instance_kwargs
 from typing import Optional
 
 
+def detect_uv_environment_format(environment: str) -> str:
+    """
+    Detect whether the PyRosettaCluster environment file string is in 'uv.lock' or 'requirements.txt' format.
+
+    Args:
+        environment: A `str` object representing the PyRosettaCluster environment file string.
+
+    Returns:
+        A `str` object of either 'uv.lock' or 'requirements.txt'.
+    """
+    for line in environment.splitlines():
+        if line.strip().startswith("[[package]]"):
+            return "uv.lock"
+    return "requirements.txt"
+
+
 def main(
     input_file: Optional[str],
     scorefile: Optional[str],
@@ -91,7 +107,8 @@ def main(
             )
 
     elif env_manager == "uv":
-        env_file = os.path.join(env_dir, "requirements.txt")
+        uv_environment_format = detect_uv_environment_format(environment)
+        env_file = os.path.join(env_dir, uv_environment_format)
         write_file(env_file, environment)
         if toml:
             toml_file = os.path.join(env_dir, toml_format)
