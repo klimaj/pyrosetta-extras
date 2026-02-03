@@ -76,6 +76,8 @@ class TestAtomCoordinates(unittest.TestCase):
         self.assertEqual(scorefxn(pose1), scorefxn(pose2))
 
     def test_coordinates(self):
+        if not pyrosetta.rosetta.basic.was_init_called():
+            pyrosetta.init(options="", extra_options=self.pyrosetta_init_flags, silent=True)
         original_pose = io.pose_from_file(self.original_output_file).pose
         reproduce_pose = io.pose_from_file(self.reproduce_output_file).pose
         self.assert_atom_coordinates(original_pose, reproduce_pose)
@@ -88,9 +90,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--original_output_file', type=str, required=True)
     parser.add_argument('--reproduce_output_file', type=str, required=True)
+    parser.add_argument(
+        "--pyrosetta_init_flags",
+        type=str,
+        required=False,
+        default="-run:constant_seed 1 -out:level 200",
+    )
     args, remaining_argv = parser.parse_known_args()
     # Inject args into the class before running test
     TestAtomCoordinates.original_output_file = args.original_output_file
     TestAtomCoordinates.reproduce_output_file = args.reproduce_output_file
+    TestAtomCoordinates.pyrosetta_init_flags = args.pyrosetta_init_flags
     # Run test
     unittest.main(argv=[__file__] + remaining_argv)
