@@ -105,7 +105,7 @@ Please see the [official PyRosettaCluster documentation](https://graylab.jhu.edu
 > If using the `uv` environment manager, please remember to set the `UV_PROJECT` environment variable to the `uv` project root directory, or run the `PyRosettaCluster` simulation from the `uv` project root directory, in order for `PyRosettaCluster` to automatically detect and cache the `uv` project's `pyproject.toml` file for environment reproducibility.
 
 > [!TIP]
-> If using the `uv` environment manager with PyRosetta version `2026.3+releasequarterly.5e498f1409` and custom/experimental libraries built from [source distributions (sdists)](https://packaging.python.org/en/latest/specifications/source-distribution-format/#source-distribution-file-format) instead of wheels, it may be helpful to cache the environment's `uv.lock` file contents for accounting or debugging purposes. Note that future versions of `PyRosettaCluster` aim to automatically cache the `uv.lock` file. The `uv.lock` file may be either committed to the GitHub repository before running the `PyRosettaCluster` simulation, or stored in the `system_info` keyword argument for persistent storage in the output decoys (and scorefile(s) if `simulation_records_in_scorefile=True`). Although very uncommon, if a `uv` project contains packages built from sdists, it may be necessary to reproduce the environment using `uv sync` from the `uv.lock` file rather than `uv pip sync` from the automatically exported and cached `requirements.txt` file. For example:
+> If using the `uv` environment manager with PyRosetta version `2026.3+releasequarterly.5e498f1409` and custom/experimental libraries built from [source distributions (sdists)](https://packaging.python.org/en/latest/specifications/source-distribution-format/#source-distribution-file-format) instead of wheels, it may be helpful to cache the environment's `uv.lock` file contents for accounting or debugging purposes. Note that subsequent quarterly releases of `pyrosetta` (and weekly releases `>2026.05` if using the PyPI `pyrosetta-installer` package for PyRosetta installation) automatically cache the `uv.lock` file. The `uv.lock` file may be either committed to the GitHub repository before running the `PyRosettaCluster` simulation, or stored in the `system_info` keyword argument for persistent storage in the output decoys (and scorefile(s) if `simulation_records_in_scorefile=True`). Although very uncommon, if a `uv` project contains packages built from sdists, it may be necessary to reproduce the environment using `uv sync` from the `uv.lock` file rather than `uv pip sync` from the automatically exported and cached `requirements.txt` file. For example:
 > ```
 > import sys
 > from pathlib import Path
@@ -234,6 +234,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
