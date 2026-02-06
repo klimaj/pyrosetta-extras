@@ -267,10 +267,10 @@ if __name__ == "__main__":
     args.env_dir = ensure_env_dir(args.env_dir)
 
     main(
-        input_file=args.input_file,
-        scorefile=args.scorefile,
-        decoy_name=args.decoy_name,
-        env_dir=args.env_dir,
-        pyrosetta_init_flags=args.pyrosetta_init_flags,
-        pandas_secure=args.pandas_secure,
+        args.input_file,
+        args.scorefile,
+        args.decoy_name,
+        args.env_dir,
+        args.pyrosetta_init_flags,
+        args.pandas_secure,
     )
