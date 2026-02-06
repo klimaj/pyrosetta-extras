@@ -44,15 +44,14 @@ def main(
     """
     Dump the PyRosettaCluster environment file(s) based on metadata from a PyRosettaCluster result.
     """
-    print("Running...")
     if (
         isinstance(input_file, str)
         and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
     ):
         if pyrosetta_init_flags:
-            pyrosetta.distributed.init(pyrosetta_init_flags)
+            pyrosetta.init(pyrosetta_init_flags)
         else:
-            pyrosetta.distributed.init()
+            pyrosetta.init()
 
     if (
         isinstance(scorefile, str)
