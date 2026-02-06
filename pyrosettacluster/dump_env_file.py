@@ -44,6 +44,14 @@ def main(
     """
     Dump the PyRosettaCluster environment file(s) based on metadata from a PyRosettaCluster result.
     """
+    print(
+        input_file,
+        scorefile,
+        decoy_name,
+        env_dir,
+        pyrosetta_init_flags,
+        pandas_secure,
+    )
     if (
         isinstance(input_file, str)
         and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
@@ -73,7 +81,6 @@ def main(
         skip_corrections=False,
         with_metadata_kwargs=True,
     )
-    print(instance_kwargs, metadata_kwargs)
 
     environment = instance_kwargs.get("environment")
     if not environment:
