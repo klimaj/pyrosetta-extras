@@ -44,6 +44,7 @@ def main(
     """
     Dump the PyRosettaCluster environment file(s) based on metadata from a PyRosettaCluster result.
     """
+    print("Running...")
     if (
         isinstance(input_file, str)
         and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
