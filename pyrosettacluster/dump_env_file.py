@@ -49,9 +49,9 @@ def main(
         and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
     ):
         if pyrosetta_init_flags:
-            pyrosetta.init(pyrosetta_init_flags)
+            pyrosetta.init(options="", extra_options=pyrosetta_init_flags, silent=True)
         else:
-            pyrosetta.init()
+            pyrosetta.init(options="", extra_options="-run:constant_seed 1 -out:level 200", silent=True)
 
     if (
         isinstance(scorefile, str)
@@ -73,6 +73,7 @@ def main(
         skip_corrections=False,
         with_metadata_kwargs=True,
     )
+    print(instance_kwargs, metadata_kwargs)
 
     environment = instance_kwargs.get("environment")
     if not environment:
