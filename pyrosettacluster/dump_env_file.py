@@ -40,6 +40,7 @@ def main(
     env_dir: Optional[str],
     pyrosetta_init_flags: Optional[str],
     pandas_secure: bool,
+    pyarrow_secure: bool,
 ) -> None:
     """
     Dump the PyRosettaCluster environment file(s) based on metadata from a PyRosettaCluster result.
@@ -67,6 +68,10 @@ def main(
     ):
         if pandas_secure:
             pyrosetta.secure_unpickle.add_secure_package("pandas")
+            print(f"[INFO] Added 'pandas' as a secure package to the PyRosetta unpickle-allowed list.")
+            if pyarrow_secure:
+                pyrosetta.secure_unpickle.add_secure_package("pyarrow")
+                print(f"[INFO] Added 'pyarrow' as a secure package to the PyRosetta unpickle-allowed list.")
         else:
             raise RuntimeError(
                 "Please also pass the `--pandas_secure` flag to retrieve data from a `pandas.DataFrame`. "
@@ -270,6 +275,16 @@ if __name__ == "__main__":
             "comes from a trusted source."
         ),
     )
+    parser.add_argument(
+        "--pyarrow_secure",
+        action="store_true",
+        default=False,
+        help=(
+            "Allow loading a pickled `pandas.DataFrame` scorefile with PyArrow-backed datatypes, "
+            "which may be required if the scorefile was saved with `pandas` version `>=3.0.0`. "
+            "This flag only has an effect if the `--pandas_secure` flag is also passed."
+        ),
+    )
 
     args = parser.parse_args()
     args.env_dir = ensure_env_dir(args.env_dir)
@@ -281,4 +296,5 @@ if __name__ == "__main__":
         args.env_dir,
         args.pyrosetta_init_flags,
         args.pandas_secure,
+        args.pyarrow_secure,
     )
