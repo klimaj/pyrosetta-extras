@@ -193,7 +193,10 @@ if __name__ == "__main__":
             "Path to a PyRosettaCluster output decoy file (a '.pdb', '.pdb.bz2', '.pkl_pose', "
             "'.pkl_pose.bz2', '.b64_pose', or '.b64_pose.bz2' file) or an output PyRosetta "
             "initialization file ('.init' or '.init.bz2' file). If provided, the `--scorefile` "
-            "and `--decoy_name` flags are ignored."
+            "and `--decoy_name` flags are ignored. If using a '.pkl_pose', '.pkl_pose.bz2', "
+            "'.b64_pose', '.b64_pose.bz2', '.init' or '.init.bz2' file, please ensure that "
+            "the current PyRosetta version is identical to that used to save the decoy file "
+            "or initialization file."
         ),
     )
 
