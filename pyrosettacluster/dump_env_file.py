@@ -40,6 +40,7 @@ def main(
     env_dir: Optional[str],
     pyrosetta_init_flags: Optional[str],
     pandas_secure: bool,
+    pyarrow_secure: bool,
 ) -> None:
     """
     Dump the PyRosettaCluster environment file(s) based on metadata from a PyRosettaCluster result.
@@ -49,9 +50,9 @@ def main(
         and input_file.endswith((".pkl_pose", ".pkl_pose.bz2", ".b64_pose", ".b64_pose.bz2"))
     ):
         if pyrosetta_init_flags:
-            pyrosetta.distributed.init(pyrosetta_init_flags)
+            pyrosetta.init(options="", extra_options=pyrosetta_init_flags, silent=True)
         else:
-            pyrosetta.distributed.init()
+            pyrosetta.init(options="", extra_options="-run:constant_seed 1 -out:level 200", silent=True)
 
     if (
         isinstance(scorefile, str)
@@ -59,6 +60,10 @@ def main(
     ):
         if pandas_secure:
             pyrosetta.secure_unpickle.add_secure_package("pandas")
+            print(f"[INFO] Added 'pandas' as a secure package to the PyRosetta unpickle-allowed list.")
+            if pyarrow_secure:
+                pyrosetta.secure_unpickle.add_secure_package("pyarrow")
+                print(f"[INFO] Added 'pyarrow' as a secure package to the PyRosetta unpickle-allowed list.")
         else:
             raise RuntimeError(
                 "Please also pass the `--pandas_secure` flag to retrieve data from a `pandas.DataFrame`. "
@@ -188,7 +193,10 @@ if __name__ == "__main__":
             "Path to a PyRosettaCluster output decoy file (a '.pdb', '.pdb.bz2', '.pkl_pose', "
             "'.pkl_pose.bz2', '.b64_pose', or '.b64_pose.bz2' file) or an output PyRosetta "
             "initialization file ('.init' or '.init.bz2' file). If provided, the `--scorefile` "
-            "and `--decoy_name` flags are ignored."
+            "and `--decoy_name` flags are ignored. If using a '.pkl_pose', '.pkl_pose.bz2', "
+            "'.b64_pose', '.b64_pose.bz2', '.init' or '.init.bz2' file, please ensure that "
+            "the current PyRosetta version is identical to that used to save the decoy file "
+            "or initialization file."
         ),
     )
 
@@ -262,15 +270,26 @@ if __name__ == "__main__":
             "comes from a trusted source."
         ),
     )
+    parser.add_argument(
+        "--pyarrow_secure",
+        action="store_true",
+        default=False,
+        help=(
+            "Allow loading a pickled `pandas.DataFrame` scorefile with PyArrow-backed datatypes, "
+            "which may be required if the scorefile was saved with `pandas` version `>=3.0.0`. "
+            "This flag only has an effect if the `--pandas_secure` flag is also passed."
+        ),
+    )
 
     args = parser.parse_args()
     args.env_dir = ensure_env_dir(args.env_dir)
 
     main(
-        input_file=args.input_file,
-        scorefile=args.scorefile,
-        decoy_name=args.decoy_name,
-        env_dir=args.env_dir,
-        pyrosetta_init_flags=args.pyrosetta_init_flags,
-        pandas_secure=args.pandas_secure,
+        args.input_file,
+        args.scorefile,
+        args.decoy_name,
+        args.env_dir,
+        args.pyrosetta_init_flags,
+        args.pandas_secure,
+        args.pyarrow_secure,
     )

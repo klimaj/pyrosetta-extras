@@ -130,17 +130,17 @@ Please refer to the following table to select _one_ environment file extraction 
 | --- | --- | --- | --- |
 | `.pdb` | Decoy | Read file → Copy → Paste into new file | Run `dump_env_file.py` helper |
 | `.pdb.bz2` | Decoy | Unzip with `bzip2` → Read file → Copy → Paste into new file | Run `dump_env_file.py` helper |
-| `.pkl_pose`, `.pkl_pose.bz2`, `.b64_pose`, `.b64_pose.bz2` | Decoy | | Run `dump_env_file.py` helper |
+| `.pkl_pose`, `.pkl_pose.bz2`, `.b64_pose`, `.b64_pose.bz2` | Decoy | | Run `dump_env_file.py` helper _(requires an identical PyRosetta build signature to that used to save the original file)_ |
 | `.json` | Full-record scorefile | Read file → Copy → Paste into new file | Run `dump_env_file.py` helper |
 | Pickled `pandas.DataFrame`<br>(`.gz`, `.xz`, `.tar`, etc.) | Full-record scorefile | | Run `dump_env_file.py` helper |
-| `.init`, `.init.bz2` | PyRosetta initialization file | | Run `dump_env_file.py` helper |
+| `.init`, `.init.bz2` | PyRosetta initialization file | | Run `dump_env_file.py` helper _(requires an identical PyRosetta build signature to that used to save the original file)_ |
 
 > [!NOTE]  
 > **Extraction method #1:** If copy/pasting into a new file, the environment file string is located in the `record["instance"]["environment"]` nested key value of the PyRosettaCluster full record. Please paste it into one of the following file names (as expected in the next step) in a new folder, depending on the environment manager you're using to recreate the environment:
 > | Environment manager | New file name |
 > | --- | --- |
 > | `pixi` | `pixi.lock` |
-> | `uv` | `requirements.txt` |
+> | `uv` | `uv.lock` |
 > | `conda` | `environment.yml` |
 > | `mamba` | `environment.yml` |
 > 
@@ -153,7 +153,7 @@ Please refer to the following table to select _one_ environment file extraction 
 > Also note the `record["instance"]["sha1"]` nested key value holding the GitHub commit SHA1 required to [reproduce the PyRosettaCluster simulation](#clone-original-repository)!
 
 > [!NOTE]  
-> **Extraction method #2:** If running `dump_env_file.py`, the `pyrosetta` package (with version `>=2025.47`) and the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package (for the `pyrosetta.distributed` framework dependencies) must be installed in any existing virtual environment, and that virtual environment's python interpreter used to run the script.
+> **Extraction method #2:** If running `dump_env_file.py`, the `pyrosetta` package (with version `>=2025.47`) and the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package (for the `pyrosetta.distributed` framework dependencies) must be installed in any existing virtual environment, and that virtual environment's python interpreter used to run the script. If extracting from a `.pkl_pose`, `.pkl_pose.bz2`, `.b64_pose`, `.b64_pose.bz2`, `.init` or `.init.bz2` file, the PyRosetta build signature _must be identical_ to that used to save the original decoy file or initialization file, otherwise an exception or segmentation fault may occur.
 >
 > Also note the printed GitHub commit SHA1 required to [reproduce the PyRosettaCluster simulation](#clone-original-repository)!
 
@@ -168,7 +168,7 @@ Run `python recreate_env.py` to recreate the virtual environment.
 > This script runs a subprocess with one of the following commands:<br>
 > - `conda env create ...`: when using the `conda` environment manager<br>
 > - `mamba env create ...`: when using the `mamba` environment manager<br>
-> - `uv pip sync ...`: when using the `uv` environment manager<br>
+> - `uv sync ...`: when using the `uv` environment manager<br>
 > - `pixi install ...`: when using the `pixi` environment manager<br>
 > Installing certain packages may not be secure, so please only run with an input environment file you trust!<br>
 > Learn more about [PyPI security](https://pypi.org/security) and [conda security](https://www.anaconda.com/docs/reference/security).
@@ -234,6 +234,7 @@ if __name__ == "__main__":
 ✅ Save your PyRosettaCluster simulation reproduction script, and run it with the _recreated environment's python interpreter_ (with the local repository `HEAD` at that same commit SHA1 for PyRosettaCluster SHA1 validation). The PyRosetta build string and the environment file string will also be validated against the original record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce a distributed PyRosettaCluster simulation.
+
 
 
 
