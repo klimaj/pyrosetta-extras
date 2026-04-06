@@ -2,7 +2,7 @@
 
 This directory contains template configuration files for creating virtual environments using different environment managers. Note that each environment manager is independent; use only the one that best fits your workflow.
 
-## Supported Environment Managers in PyRosettaCluster
+## Supported Environment Managers in *PyRosettaCluster*
 
 ### *Conda* / *Mamba*
 
