@@ -107,7 +107,7 @@ Please see the [official *PyRosettaCluster* documentation](https://graylab.jhu.e
 > If using the *uv* environment manager, please remember to set the `UV_PROJECT` environment variable to the *uv* project root directory, or run the *PyRosettaCluster* simulation from the *uv* project root directory, in order for the *PyRosettaCluster* framework to automatically detect and cache the *uv* project's `pyproject.toml` file for environment configuration reproducibility.
 
 > [!TIP]
-> If using the *uv* environment manager with PyRosetta version `2026.3+releasequarterly.5e498f1409` and custom/experimental libraries built from [source distributions (sdists)](https://packaging.python.org/en/latest/specifications/source-distribution-format/#source-distribution-file-format) instead of wheels, it may be helpful to cache the environment's `uv.lock` file contents for accounting or debugging purposes. Note that subsequent quarterly releases of `pyrosetta` (and weekly releases `>2026.05` if using the PyPI `pyrosetta-installer` package for PyRosetta installation) automatically cache the `uv.lock` file. The `uv.lock` file may be either committed to the GitHub repository before running the *PyRosettaCluster* simulation, or stored in the `system_info` keyword argument for persistent storage in the output decoys (and scorefile(s) if `simulation_records_in_scorefile=True`). Although very uncommon, if a *uv* project contains packages built from sdists, it may be necessary to reproduce the environment using `uv sync` from the `uv.lock` file rather than `uv pip sync` from the automatically exported and cached `requirements.txt` file. For example:
+> If using the *uv* environment manager with PyRosetta version `2026.3+releasequarterly.5e498f1409` and custom/experimental libraries built from [source distributions (sdists)](https://packaging.python.org/en/latest/specifications/source-distribution-format/#source-distribution-file-format) instead of wheels, it may be helpful to cache the environment's `uv.lock` file contents for accounting or debugging purposes. Note that subsequent quarterly releases of `pyrosetta` (and weekly releases `>2026.05` if using the PyPI `pyrosetta-installer` package for PyRosetta installation) automatically cache the `uv.lock` file. The `uv.lock` file may be either committed to the *Git* repository before running the *PyRosettaCluster* simulation, or stored in the `system_info` keyword argument for persistent storage in the output decoys (and scorefile(s) if `simulation_records_in_scorefile=True`). Although very uncommon, if a *uv* project contains packages built from sdists, it may be necessary to reproduce the environment using `uv sync` from the `uv.lock` file rather than `uv pip sync` from the automatically exported and cached `requirements.txt` file. For example:
 > ```
 > import sys
 > from pathlib import Path
@@ -166,7 +166,7 @@ Please refer to the following table to select _one_ environment file extraction 
 
 <a name="recreate-environment"></a>
 ## 2️⃣ 🛠️ *Re*create Environment
-Run `python recreate_env.py` to recreate the virtual environment.
+Run [`recreate_env.py`](recreate_env.py) to recreate the virtual environment.
 
 > [!CAUTION]
 > This script runs a subprocess with one of the following commands:<br>
@@ -175,7 +175,7 @@ Run `python recreate_env.py` to recreate the virtual environment.
 > - `uv sync ...`: when using the *uv* environment manager<br>
 > - `pixi install ...`: when using the *Pixi* environment manager<br>
 > Installing certain packages may not be secure, so please only run with an input environment file you trust!<br>
-> Learn more about [PyPI security](https://pypi.org/security) and [conda security](https://www.anaconda.com/docs/reference/security).
+> Learn more about [PyPI security](https://pypi.org/security) and [Conda security](https://www.anaconda.com/docs/reference/security).
 
 > [!IMPORTANT]
 > If using *Pixi*/*uv* environment managers, please use the _system Python interpreter_, since the script creates a new *Pixi*/*uv* environment and cannot be run from an existing virtual environment.
