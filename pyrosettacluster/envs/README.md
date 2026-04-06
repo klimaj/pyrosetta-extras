@@ -4,7 +4,7 @@ This directory contains template configuration files for creating virtual enviro
 
 ## Supported Environment Managers in PyRosettaCluster
 
-### conda / mamba
+### *Conda* / *Mamba*
 
 - `environment.yml`
   - Create a conda environment:
@@ -14,7 +14,7 @@ This directory contains template configuration files for creating virtual enviro
 
 ---
 
-### pixi
+### *Pixi*
 
 - `pixi.toml`
   - Create and install the pixi environment:
@@ -22,7 +22,7 @@ This directory contains template configuration files for creating virtual enviro
 
 ---
 
-### uv
+### *uv*
 
 - `pyproject.toml`
   - Install and sync dependencies for a uv project:
