@@ -3,7 +3,7 @@
   <br><br>
 </div>
 
-PyRosettaCluster is a Python framework for reproducible, high-throughput job distribution of user-defined PyRosetta protocols efficiently parallelized on the user's local computer, high-performance computing (HPC) cluster, or elastic cloud computing infrastructure with available compute resources.
+*PyRosettaCluster* is a Python-based framework for reproducible, high-throughput job distribution of user-defined PyRosetta protocols efficiently parallelized on the user's local computer, high-performance computing (HPC) cluster, or elastic cloud computing infrastructure with available compute resources.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ PyRosettaCluster is a Python framework for reproducible, high-throughput job dis
 ---
 <a name="creating-environments-for-pyrosettacluster"></a>
 # 🏠 Creating Environments for PyRosettaCluster
-PyRosettaCluster supports running reproducible PyRosetta simulations from reproducible virtual environments created with [Conda](https://docs.conda.io/), [Mamba](https://mamba.readthedocs.io/), [uv](https://docs.astral.sh/uv/), and [Pixi](https://pixi.sh/) environment managers. Please install [PyRosetta](https://www.pyrosetta.org/downloads) (with `cxx11thread.serialization` support) and the following packages to get started (and see the [envs](envs) directory for template environment configuration files)!
+The *PyRosettaCluster* framework supports running reproducible PyRosetta simulations from reproducible virtual environments created with [Conda](https://docs.conda.io/), [Mamba](https://mamba.readthedocs.io/), [uv](https://docs.astral.sh/uv/), and [Pixi](https://pixi.sh/) environment managers. Please install [PyRosetta](https://www.pyrosetta.org/downloads) (with `cxx11thread.serialization` support) and the following packages to get started (and see the [envs](envs) directory for template environment configuration files)!
 - `attrs`, `billiard`, `blosc`, `cloudpickle`, `cryptography`, `dask`, `dask-jobqueue`, `distributed`, `gitpython`, `numpy`, `pandas`, `python-xz`, `scipy`, `traitlets`
 
 [Official Full List of Packages](https://github.com/RosettaCommons/rosetta/blob/main/tests/benchmark/tests/__init__.py#L69-L84)
@@ -27,7 +27,7 @@ PyRosettaCluster supports running reproducible PyRosetta simulations from reprod
 > [!IMPORTANT]
 > It is recommended to install the required packages individually when using the `uv` environment manager.
 >
-> _Explanation:_ If using the `uv` environment manager, it is highly recommended to avoid using the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) package to install the required `pyrosetta.distributed` framework packages (which installs subpackages using `pip install ...`, so the subpackages will _not_ get registered as installed in the exported `uv` environment file). Instead, please install the required `pyrosetta.distributed` framework packages individually to register them properly in the uv environment.
+> _Explanation:_ If using the `uv` environment manager, it is highly recommended to avoid using the [PyPI pyrosetta-distributed](https://pypi.org/project/pyrosetta-distributed/) metapackage to install the required `pyrosetta.distributed` framework packages (which installs subpackages using `pip install ...`, so the subpackages will _not_ get registered as installed in the exported `uv` environment file). Instead, please install the required `pyrosetta.distributed` framework packages individually to register them properly in the uv environment. See the [envs/uv](envs/uv) directory for template environment configuration files.
 
 > [!IMPORTANT]
 > It is recommended to install PyRosetta via the *quarterly builds* (instead of the PyPI `pyrosetta-installer` package) when using the `uv` environment manager.
