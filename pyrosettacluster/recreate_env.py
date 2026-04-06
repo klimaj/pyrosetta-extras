@@ -9,7 +9,7 @@ Installing certain packages may not be secure, so please only run with input fil
 Learn more about PyPI security at <https://pypi.org/security> and conda security
 at <https://www.anaconda.com/docs/reference/security>.
 
-Given an environment directory with dumped files that were written by PyRosettaCluster,
+Given an environment directory with dumped files that were written by `PyRosettaCluster`,
 recreate the environment that was used to generate the decoy with a new environment name.
 The environment manager used (i.e., either 'conda', 'mamba', 'uv', or 'pixi') is
 automatically determined from the operating system environment variable
