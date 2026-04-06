@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
 *Warning*: This script runs a subprocess with one of the following commands:
-    - `conda env create ...`: when 'conda' is an executable
-    - `mamba env create ...`: when 'mamba' is an executable
-    - `uv sync ...`: when 'uv' is an executable
-    - `pixi install ...`: when 'pixi' is an executable
+    - `conda env create ...`: when `conda` is an executable
+    - `mamba env create ...`: when `mamba` is an executable
+    - `uv sync ...`: when `uv` is an executable
+    - `pixi install ...`: when `pixi` is an executable
 Installing certain packages may not be secure, so please only run with input files you trust.
 Learn more about PyPI security at <https://pypi.org/security> and conda security
 at <https://www.anaconda.com/docs/reference/security>.
 
 Given an environment directory with dumped files that were written by `PyRosettaCluster`,
 recreate the environment that was used to generate the decoy with a new environment name.
-The environment manager used (i.e., either 'conda', 'mamba', 'uv', or 'pixi') is
+The environment manager used (i.e., either `conda`, `mamba`, `uv`, or `pixi`) is
 automatically determined from the operating system environment variable
 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER' if exported, or otherwise it must be
 provided using the `--env_manager` flag.
