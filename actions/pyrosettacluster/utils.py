@@ -1,10 +1,8 @@
-"""Miscellaneous utilities for PyRosettaCluster unit tests."""
+"""Miscellaneous utilities for `PyRosettaCluster` unit tests."""
 
 __author__ = "Jason C. Klima"
 
-
 import platform
-
 
 USE_WEST_MIRROR: bool = True
 if USE_WEST_MIRROR:
@@ -17,6 +15,7 @@ else:
 
 def detect_platform():
     """Detect system platform string used by GitHub Actions."""
+
     system = platform.system().lower()
     machine = platform.machine().lower()
 

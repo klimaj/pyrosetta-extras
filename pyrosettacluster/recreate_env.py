@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
 *Warning*: This script runs a subprocess with one of the following commands:
-    - `conda env create ...`: when 'conda' is an executable
-    - `mamba env create ...`: when 'mamba' is an executable
-    - `uv sync ...`: when 'uv' is an executable
-    - `pixi install ...`: when 'pixi' is an executable
+    - `conda env create ...`: when `conda` is an executable
+    - `mamba env create ...`: when `mamba` is an executable
+    - `uv sync ...`: when `uv` is an executable
+    - `pixi install ...`: when `pixi` is an executable
 Installing certain packages may not be secure, so please only run with input files you trust.
 Learn more about PyPI security at <https://pypi.org/security> and conda security
 at <https://www.anaconda.com/docs/reference/security>.
 
-Given an environment directory with dumped files that were written by PyRosettaCluster,
+Given an environment directory with dumped files that were written by `PyRosettaCluster`,
 recreate the environment that was used to generate the decoy with a new environment name.
-The environment manager used (i.e., either 'conda', 'mamba', 'uv', or 'pixi') is
+The environment manager used (i.e., either `conda`, `mamba`, `uv`, or `pixi`) is
 automatically determined from the operating system environment variable
 'PYROSETTACLUSTER_ENVIRONMENT_MANAGER' if exported, or otherwise it must be
 provided using the `--env_manager` flag.
@@ -37,7 +37,8 @@ def run_subprocess(
     env: Optional[Dict[str, Any]] = None,
     timeout: float = 3600,
 ) -> str:
-    """Run a shell command and return its stdout, raising RuntimeError on failure."""
+    """Run a shell command and return its standard output, raising `RuntimeError` on failure."""
+
     print(f"[INFO] Running command: `{cmd}`")
     try:
         output = subprocess.check_output(
@@ -63,6 +64,7 @@ def run_subprocess(
 
 def uv_lock_package_present(lock_file: str, name: str) -> bool:
     """Test if a package name is specified in an input 'uv.lock' file."""
+
     with open(lock_file, "r") as f:
         contents = f.read()
     return bool(re.search(rf'^\[\[package\]\]\s*\n\s*name\s*=\s*"{name}"\s*$', contents, flags=re.MULTILINE))
@@ -70,6 +72,7 @@ def uv_lock_package_present(lock_file: str, name: str) -> bool:
 
 def requirement_present(req_file: str, name: str) -> bool:
     """Test if a package name is specified in an input 'requirements.txt' file."""
+
     with open(req_file, "r") as f:
         contents = f.read()
     return bool(re.search(rf"^{re.escape(name)}==", contents, flags=re.MULTILINE))
@@ -77,7 +80,7 @@ def requirement_present(req_file: str, name: str) -> bool:
 
 def recreate_environment(env_dir: str, env_manager: str, timeout: float, mirror_order: List[int]) -> None:
     """
-    Recreate an environment using pixi, uv, conda, or mamba inside `env_dir`.
+    Recreate an environment using Pixi, uv, Conda, or Mamba inside `env_dir`.
     The directory must already exist.
     """
 
@@ -185,6 +188,7 @@ def recreate_environment(env_dir: str, env_manager: str, timeout: float, mirror_
 
 def parse_env_dir(path: Optional[str]) -> str:
     """Validate and normalize the environment directory path."""
+
     if path is None:
         path = os.path.abspath(os.curdir)
     else:
@@ -208,7 +212,8 @@ def parse_env_dir(path: Optional[str]) -> str:
 
 
 def validate_env_manager(manager: str) -> str:
-    """Validate that the environment manager exists on PATH."""
+    """Validate that the environment manager exists on `PATH`."""
+
     allowed = ["pixi", "uv", "conda", "mamba"]
     manager = manager.lower()
 
@@ -279,7 +284,8 @@ if __name__ == "__main__":
             "Optionally, if using the `uv` environment manager and the `pyrosetta-installer` package "
             "is specified as a dependency in the `requirements.txt` file, then this option sets the "
             "PyRosetta installer mirror order to try, e.g. `--mirror_order 0 1`. If not using `uv`, "
-            "this option is ignored. See the PyPI 'pyrosetta-installer' package website for details."
+            "this option is ignored. See the PyPI 'pyrosetta-installer' package website for details:\n"
+            "https://pypi.org/project/pyrosetta-installer/\n"
         ),
     )
 

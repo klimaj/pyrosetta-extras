@@ -1,6 +1,4 @@
 # Requires Python >=3.9
---find-links https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
---find-links https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization
 attrs>=19.3.0
 billiard>=3.6.3.0
 blosc>=1.8.3
@@ -18,3 +16,6 @@ pyrosetta>=2026.3
 python-xz>=0.4.0
 scipy>=1.4.1
 traitlets>=4.3.3
+# It's recommended to comment out one of these links search paths based on location
+--find-links https://west.rosettacommons.org/pyrosetta/quarterly/release.cxx11thread.serialization
+# --find-links https://graylab.jhu.edu/download/PyRosetta4/archive/release-quarterly/release.cxx11thread.serialization

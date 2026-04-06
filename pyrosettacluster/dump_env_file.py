@@ -1,7 +1,8 @@
 """
-Extract and write a PyRosettaCluster environment file based on metadata from a PyRosettaCluster
-output decoy file or PyRosettaCluster output scorefile. This script requires PyRosetta version
-`>=2025.47` and `pyrosetta.distributed` framework dependencies to be installed.
+Extract and write a `PyRosettaCluster` environment file based on metadata from a `PyRosettaCluster`
+output decoy file or `PyRosettaCluster` output scorefile with full simulation records. This script
+requires PyRosetta version `>=2025.47` and `pyrosetta.distributed` framework dependencies to be
+installed.
 """
 
 __author__ = "Jason C. Klima"

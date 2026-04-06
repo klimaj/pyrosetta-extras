@@ -1,6 +1,5 @@
 __author__ = "Jason C. Klima"
 
-
 import argparse
 import pyrosetta
 import pyrosetta.distributed.io as io
@@ -8,6 +7,8 @@ import unittest
 
 
 class TestAtomCoordinates(unittest.TestCase):
+    """Test case for identical atomic coordinate components."""
+
     def assert_atom_coordinates(self, pose1, pose2):
         self.assertEqual(pose1.size(), pose2.size())
         for res in range(1, pose1.size() + 1):

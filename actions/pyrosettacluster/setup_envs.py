@@ -5,7 +5,6 @@ the original PyRosettaCluster simulation runs during unit testing.
 
 __author__ = "Jason C. Klima"
 
-
 import argparse
 import os
 import subprocess
@@ -24,7 +23,7 @@ from actions.pyrosettacluster.utils import (
 
 def setup_pixi_environment(env_dir, timeout):
     """
-    Create a fresh pixi environment containing 'pyrosetta' and 'pyrosetta-distributed' packages.
+    Create a fresh Pixi environment containing 'pyrosetta' and 'pyrosetta-distributed' packages.
 
     Note: this requires that `pixi` is an executable installed and on `${PATH}`. This function:
     - detects the current Python version
@@ -32,6 +31,7 @@ def setup_pixi_environment(env_dir, timeout):
     - writes a compatible 'pixi.toml' file
     - runs `pixi install` to build a new pixi environment
     """
+
     # Detect current Python version
     # Pixi/Conda only publishes minor versions (e.g., `3.9.x`), not every patch release (e.g., `3.9.25`)
     # Therefore, use a wild-card to fetch the latest micro version available
@@ -79,6 +79,7 @@ def setup_uv_environment_pyrosetta_installer(env_dir, timeout):
     - adds 'pyrosetta-installer', 'pip', and `pyrosetta.distributed` dependencies via `uv add ...`
     - runs the PyRosetta installer using `uv run python ...`
     """
+
     env_path = Path(env_dir)
     if env_path.exists():
         raise FileExistsError(f"The specified uv environment path already exists: '{env_path}'.")
@@ -133,6 +134,7 @@ def setup_uv_environment(env_dir, timeout):
     - detects the current Python version
     - adds PyRosetta and `pyrosetta.distributed` dependencies via `uv add ...`
     """
+
     env_path = Path(env_dir)
     if env_path.exists():
         raise FileExistsError(f"The specified uv environment path already exists: '{env_path}'.")
@@ -172,7 +174,7 @@ def setup_uv_environment(env_dir, timeout):
 
 def setup_conda_environment(env_dir, timeout, env_manager="conda"):
     """
-    Create a fresh conda/mamba environment containing 'pyrosetta' and 'pyrosetta-distributed' packages.
+    Create a fresh Conda/Mamba environment containing 'pyrosetta' and 'pyrosetta-distributed' packages.
 
     Note: this requires that `conda` or `mamba` is an executable installed and on `${PATH}`. This function:
     - detects the current Python version
