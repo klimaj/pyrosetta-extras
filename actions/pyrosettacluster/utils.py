@@ -1,4 +1,4 @@
-"""Miscellaneous utilities for PyRosettaCluster unit tests."""
+"""Miscellaneous utilities for `PyRosettaCluster` unit tests."""
 
 __author__ = "Jason C. Klima"
 
