@@ -1,9 +1,8 @@
 """
-PyRosettaCluster environment reproducibility unit test suite using the `unittest` framework.
+`PyRosettaCluster` environment reproducibility unit test suite using the `unittest` framework.
 """
 
 __author__ = "Jason C. Klima"
-
 
 import json
 import os
@@ -17,11 +16,12 @@ import uuid
 
 from pathlib import Path
 
-
 from actions.pyrosettacluster.utils import USE_WEST_MIRROR
 
 
 class TestEnvironmentReproducibility(unittest.TestCase):
+    """Test case for `PyRosettaCluster` environment configuration reproducibility."""
+
     @classmethod
     def setUpClass(cls):
         cls.workdir = tempfile.TemporaryDirectory()
@@ -83,6 +83,7 @@ class TestEnvironmentReproducibility(unittest.TestCase):
         verbose=False,
     ):
         """Test for PyRosettaCluster decoy reproducibility in a recreated virtual environment."""
+
         self.assertIn(environment_manager, ("conda", "mamba", "uv", "pixi"))
         self.assertIsInstance(use_pyrosetta_installer, bool)
         if use_pyrosetta_installer:
