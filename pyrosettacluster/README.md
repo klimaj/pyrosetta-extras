@@ -15,6 +15,7 @@
 - [Reproducing PyRosettaCluster Simulations](#reproducing-pyrosettacluster-simulations)
   1. [Clone Original Repository](#clone-original-repository)
   2. [Run Reproduction Script](#run-reproduction-script)
+- [Citation](#citation)
 
 ---
 <a name="creating-environments-for-pyrosettacluster"></a>
@@ -238,3 +239,24 @@ if __name__ == "__main__":
 ✅ Save your *PyRosettaCluster* simulation reproduction script, and run it with the _recreated environment's Python interpreter_ (with the local repository `HEAD` at that same *Git* commit SHA-1 for proper *PyRosettaCluster* SHA-1 validation). The PyRosetta build string and the environment file string will also be validated against the original full simulation record at this step.
 
 🎉 Congrats! You have now recreated a virtual environment and used it to successfully reproduce an output decoy from a distributed *PyRosettaCluster* simulation.
+
+<a name="citation"></a>
+# Citation
+
+If you use this GitHub repository directory or its subdirectories, please cite the ChemRxiv article:
+
+```
+@article{klima_2026_15002628,
+  author       = {Klima, Jason C.},
+  title        = {PyRosettaCluster: a Python framework for scalable and reproducible bio-macromolecular modeling and design},
+  journal      = {ChemRxiv},
+  volume       = {2026},
+  number       = {0501},
+  pages        = {},
+  year         = {2026},
+  doi          = {10.26434/chemrxiv.15002628/v1},
+  url          = {https://chemrxiv.org/doi/abs/10.26434/chemrxiv.15002628/v1},
+  eprint       = {https://chemrxiv.org/doi/pdf/10.26434/chemrxiv.15002628/v1},
+  abstract     = {The Rosetta software suite offers a set of powerful tools for bio-macromolecular modeling and design capable of high-resolution protein structure refinement and generation of de novo designed proteins with sub-angstrom atomic accuracy. Leveraging these tools at scale requires both immense computational resources and domain expertise, without which may lead to results that are not scientifically reproducible by independent investigators, in part due to challenges in communicating all of the necessary runtime configurations and system requirements. To address these reproducibility challenges for large-scale simulation, we developed PyRosettaCluster, a versatile Python-based framework integrated into PyRosetta software to automatically capture the simulation data required to accurately reproduce a decoy and directly encode it into every output decoy file. PyRosettaCluster abstracts away complicated task execution orchestration details for distributed workflows, effectively parallelizing modular, user-defined PyRosetta protocols parameterized by user-defined tasks using the lightweight Dask library. PyRosettaCluster supports integration of emerging third-party software applications into PyRosetta protocols, enabling inference of modern graphics processing unit (GPU)-accelerated artificial intelligence (AI) models for bio-macromolecular modeling and design tasks, provided they preserve deterministic runtime behavior for reproducibility purposes. Integration with the Dask-Jobqueue library enables job scheduling on high-performance computing (HPC) or elastic cloud compute infrastructure with arbitrary compute resources. Overall, this multipurpose tool provides a basis for scalable and reproducible bio-macromolecular modeling and design workflows in PyRosetta software. PyRosettaCluster was merged into the Rosetta software suite codebase in September 2020, and its source code has been publicly accessible since March 2024.},
+}
+```
